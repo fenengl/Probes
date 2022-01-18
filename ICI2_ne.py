@@ -15,11 +15,9 @@ rs=10e-3 ### ICI2 rocket parameters
 geo1 = l.Sphere(r=rs)
 geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
 
-l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
 
 model = l.finite_length_current
-model_sphere=l.thermal_current
-#### for large radius thermal current,  under 0.2 debye OML
+model_sphere=l.OML_current
 
 Vs_geo1 = np.array([4]) # bias voltages
 Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
@@ -50,7 +48,7 @@ Is_geo2 = np.zeros((N,len(Vs_geo2)))
 
 
 for i, n, T, V0 in zip(count(), ns, Ts, tqdm(V0s)):
-    Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T))#,V=V0+Vs_geo1)
+    Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     Is_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 
 
@@ -68,7 +66,7 @@ M = int(0.8*N)
 
 # Train by minimizing relative error in temperature
 net = RBFnet()
-net.train(Is[:M], Ts[:M], num=250, relative=True, measure=rms_rel_error)
+net.train(Is[:M], ns[:M], num=250, relative=True, measure=rms_rel_error)
 
 
 # Plot and print error metrics on test data
@@ -78,8 +76,8 @@ Vs_geo2_str=np.array2string(Vs_geo2, formatter={'float_kind':lambda x: "%.1f" % 
 
 
 fig, ax = plt.subplots()
-#plot_corr(ax, ns[M:], pred, log=True)
-plot_corr(ax, Ts[M:], pred, log=True)
+plot_corr(ax, ns[M:], pred, log=True)
+#plot_corr(ax, Ts[M:], pred, log=True)
 plt.savefig('ICI2_test.png', bbox_inches="tight")
 #print("RMS of relative density error: {:.1f}%".format(100*rms_rel_error(ns[M:], pred)))
 print("RMS of relative density error: {:.1f}%".format(100*rms_rel_error(Ts[M:], pred)))
@@ -94,7 +92,7 @@ I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
 
 
 for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
-    I_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T))#, V=V0+Vs_geo1)
+    I_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 
 
@@ -107,14 +105,14 @@ pred = net.predict(I)
 
 plt.figure()
 
-plt.plot(data['Te'], data['alt'], label='Ground truth')
+plt.plot(data['ne'], data['alt'], label='Ground truth')
 plt.plot(pred, data['alt'], label='Predicted')
 plt.xlabel('Temperature $[\mathrm{K}]$')
 plt.ylabel('Altitude $[\mathrm{km}]$')
 
 print_table(
     [['RMSE'              , 'RMSRE'                  ],
-     [rms_error(data['Te'], pred), rms_rel_error(data['Te'] , pred)]])
+     [rms_error(data['ne'], pred), rms_rel_error(data['Te'] , pred)]])
 
 plt.legend()
 plt.savefig('ICI2_predict.png', bbox_inches="tight")
