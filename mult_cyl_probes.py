@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import langmuir as l
+import pandas as pd
 from tqdm import tqdm
 from itertools import count
 from localreg import RBFnet, plot_corr
 from localreg.metrics import rms_error, rms_rel_error
 from frmt import print_table
+from copy import deepcopy
 
 path='plots/'
 
@@ -81,6 +83,15 @@ for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
     I_geo1[i] = model(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 I=np.append(I_geo1,I_geo2,axis=1)
+
+data2 = deepcopy(data)
+data2['I0'] = I[:,0]
+data2['I1'] = I[:,1]
+data2['I2'] = I[:,2]
+data2['I3'] = I[:,3]
+data2.pop('I')
+df = pd.DataFrame.from_dict(data2)
+df.to_csv('iri_data.csv')
 
 pred = net.predict(I)
 
