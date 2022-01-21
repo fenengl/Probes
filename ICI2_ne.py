@@ -15,9 +15,11 @@ rs=10e-3 ### ICI2 rocket parameters
 geo1 = l.Sphere(r=rs)
 geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
 
+l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
 
 model = l.finite_length_current
 model_sphere=l.OML_current
+#### shoule be under 0.2 debye OML but is in the magnitude of debye length
 
 Vs_geo1 = np.array([4]) # bias voltages
 Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
@@ -48,7 +50,7 @@ Is_geo2 = np.zeros((N,len(Vs_geo2)))
 
 
 for i, n, T, V0 in zip(count(), ns, Ts, tqdm(V0s)):
-    Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
+    Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
     Is_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 
 
