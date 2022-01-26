@@ -75,7 +75,7 @@ M = int(0.8*N)
 
 # Train by minimizing relative error in temperature
 net = RBFnet()
-net.train(Is[:M], Ts[:M], num=200, relative=True, measure=rms_rel_error) ### 180/200 works okay/250
+net.train(Is[:M], Ts[:M], num=20, relative=True, measure=rms_rel_error) ### 180/200 works okay/250
 
 # Plot and print error metrics on test data
 pred = net.predict(Is[M:])
@@ -94,7 +94,8 @@ print("RMS of relative density error: {:.1f}%".format(100*rms_rel_error(Ts[M:], 
 PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA
 """
 
-data = l.generate_synthetic_data(geo2, Vs_all, model=model,noise=0) ####3<<<<<<<<<<this is where the eta warningscome from
+data = l.generate_synthetic_data(geo2, Vs_all, model=model,noise=0) ####<<<<<<<<<<this is where the eta warnings come from
+
 
 cond=(calc_eta(Vmax,data['Te'])<95)
 data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
