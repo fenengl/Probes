@@ -78,7 +78,7 @@ M = int(0.8*N)
 
 # Train by minimizing relative error in temperature
 net = RBFnet()
-net.train(Is[:M], Ts[:M], num=20, relative=True, measure=rms_rel_error) ### 180/200 works okay/250
+net.train(Is[:M], Ts[:M], num=50, relative=True, measure=rms_rel_error) ### 180/200 works okay/250
 
 # Plot and print error metrics on test data
 pred = net.predict(Is[M:])
@@ -99,11 +99,6 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA
 
 data = l.generate_synthetic_data(geo2, Vs_all, model=model,noise=0) ####<<<<<<<<<<this is where the eta warnings come from
 
-
-cond=(calc_eta(Vmax,data['Te'])<95)
-data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
-
-
 I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
 
@@ -121,8 +116,12 @@ data2.pop('I')
 df = pd.DataFrame.from_dict(data2)
 df.to_csv('iri_data.csv')
 
-pred = net.predict(I)
+cond=(calc_eta(Vmax,data['Te'])<95)
+I = I[cond]
+for key in data:
+    data[key] = data[key][cond]
 
+pred = net.predict(I)
 
 plt.figure()
 
