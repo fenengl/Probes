@@ -15,27 +15,20 @@ import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
-
 #from tensorflow.keras.layers import Normalization
 
 l1=25e-3
+l2=40e-3
 r0=0.255e-3
-rs=10e-3 ### ICI2 rocket parameters
-
-geo1 = l.Sphere(r=rs)
-geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
-
+geo1 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
+geo2 = l.Cylinder(r=r0, l=l2, lguard=float('inf'))
+model = l.finite_length_current
+Vs_geo1 = np.array([2.5,10]) # bias voltages
+Vs_geo2 = np.array([4])#,5.5]) # bias voltages
+### not possible for two  with different length but possible for 3 probes (2 lenghts)
 l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
 
 
-model = l.finite_length_current
-model_sphere=l.OML_current
-
-
-Vs_geo1 = np.array([4]) # bias voltages
-Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
-
-### works also with 2 cyl probes and a sphere
 
 """
 PART 1: GENERATE SYNTHETIC DATA USING LANGMUIR
@@ -54,7 +47,7 @@ def calc_eta(V,T):
     return eta
 
 
-N = 50000 #### has been increased from 5000
+N = 100000 #### has been increased from 5000
 ns  = rand_log(N, [4e10, 3e11])  # densities
 Ts = rand_uniform(N, [800, 3000]) # temperatures
 V0s = rand_uniform(N, [-1,  0])   # floating potentials
@@ -63,9 +56,9 @@ Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 Vmax=np.max(Vs_all)
 
 
-# cond=(calc_eta(Vmax,Ts)<100)
-# Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
-# N=len(Ts)
+cond=(calc_eta(Vmax,Ts)<90)
+Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
+N=len(Ts)
 
 
 # Generate probe currents corresponding to plasma parameters
@@ -74,12 +67,9 @@ Is_geo2 = np.zeros((N,len(Vs_geo2)))
 
 
 for i, n, T, V0 in zip(count(), ns, Ts, tqdm(V0s)):
-        Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
+        Is_geo1[i] = model(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
         Is_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 Is=np.append(Is_geo1,Is_geo2,axis=1)
-
-I_OML = OML_current(geometry, plasma, V)
-I_FR = finite_radius_current(geometry, plasma, V)
 
 """
 PART 2: TRAIN AND TEST THE REGRESSION NETWORK
@@ -155,7 +145,7 @@ with open('report.txt','w') as fh:
 #trained=model.fit(xs, ys, epochs=500)
 history=tf_model.fit(Is[:M], Ts[:M],
                validation_data=(Is[M:], Ts[M:]), ## add this again
-               verbose=1, epochs=100)
+               verbose=1, epochs=40)
 
 ax = pd.DataFrame(data=history.history).plot(figsize=(15, 7))
 ax.grid()
@@ -177,16 +167,16 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA
 """
 
 
-data = l.generate_synthetic_data(geo1, Vs_geo1, model=model,noise=0)
-# cond=(calc_eta(Vmax,data['Te'])<100)
-# data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
+data = l.generate_synthetic_data(geo1, Vs_geo1, model=model)#,noise=1)
+cond=(calc_eta(Vmax,data['Te'])<90)
+data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
 
 
 I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
 
 for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
-    I_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
+    I_geo1[i] = model(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 
 

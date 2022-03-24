@@ -10,27 +10,28 @@ import scipy.constants as sc
 
 import tensorflow as tf
 import pandas as pd
-
+import math
 import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
-
+from finite_radius_extrapolated import *
+from finite_length_extrapolated import *
 #from tensorflow.keras.layers import Normalization
 
 l1=25e-3
 r0=0.255e-3
-rs=10e-3 ### ICI2 rocket parameters
+rs=10e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters
 
 geo1 = l.Sphere(r=rs)
 geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
 
-l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
-
-
+# a=l.Electron(n=1e11, T=1600).debye*1 ### *1 for cylinders
+# print(a)
+# breakpoint()
 model = l.finite_length_current
-model_sphere=l.OML_current
-
+model_sphere=finite_radius_current
+#model_sphere2=l.OML_current
 
 Vs_geo1 = np.array([4]) # bias voltages
 Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
@@ -54,33 +55,63 @@ def calc_eta(V,T):
     return eta
 
 
-N = 50000 #### has been increased from 5000
+N = 50000 #### has been increased from 5000 ---increase to 50000
+
 ns  = rand_log(N, [4e10, 3e11])  # densities
+#ns=np.repeat(1e11,N)
 Ts = rand_uniform(N, [800, 3000]) # temperatures
+#Ts=np.repeat(1600, N)
 V0s = rand_uniform(N, [-1,  0])   # floating potentials
+#V0s = np.linspace(-1, 0,num=N)
 
 Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 Vmax=np.max(Vs_all)
 
+cond=(calc_eta(Vmax+V0s,Ts)<100)
+Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
+N=len(Ts)
 
-# cond=(calc_eta(Vmax,Ts)<100)
-# Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
-# N=len(Ts)
 
 
+# plt.figure()
+# plt.xlabel('eta')
+# plt.ylabel('Ts')
+# plt.scatter(Ts,calc_eta(V0s+Vs_geo1,Ts))
+# plt.show()
+# a=calc_eta(V0s+Vs_geo1,Ts)
+# a=a[a<10]
+# print(a)
 # Generate probe currents corresponding to plasma parameters
 Is_geo1 = np.zeros((N,len(Vs_geo1)))
 Is_geo2 = np.zeros((N,len(Vs_geo2)))
-
+Is_geo_OML = np.zeros((N,len(Vs_geo1)))
 
 for i, n, T, V0 in zip(count(), ns, Ts, tqdm(V0s)):
         Is_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
+        #Is_geo_OML[i] = model_sphere2(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
         Is_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 Is=np.append(Is_geo1,Is_geo2,axis=1)
 
-I_OML = OML_current(geometry, plasma, V)
-I_FR = finite_radius_current(geometry, plasma, V)
+# eta=calc_eta(V0s+Vs_geo1,Ts)
+# plt.scatter(V0s+Vs_geo1, -Is_geo_OML*1e6, marker='.', label='OML')
+# plt.scatter(V0s+Vs_geo1, -Is_geo1*1e6, marker='.',label='FR')
+# plt.xlabel('V [V]')
+# plt.ylabel('I [uA]')
+# plt.legend()
+# plt.show()
+# breakpoint()
 
+
+# Isat=sc.elementary_charge*4*sc.pi*ns*np.sqrt((sc.Boltzmann*Ts)/(2*sc.pi*sc.m_e))
+#
+# Isat=np.array(Isat)
+# Is_1=np.array(Is[:,1])
+# print(Isat.shape)
+# print(Is_1.shape)
+
+# allvar=np.column_stack((Isat,Is_1,Ts))
+# np.savetxt('Isat_Is_Ts.txt', allvar)
+# breakpoint()
 """
 PART 2: TRAIN AND TEST THE REGRESSION NETWORK
 """
@@ -112,6 +143,16 @@ tf_model = keras.Sequential([
  layers.Dense(1, activation='relu')
 ])
 
+# tf_model = keras.Sequential([
+#  normal,
+#  layers.Dense(200, activation='relu', input_shape=[1]), #50
+#  layers.Dense(40, activation='relu'),
+#  layers.Dense(40, activation='relu'),#50
+#  layers.Dense(1, activation='relu')
+# ])------ this worked down to 150
+
+
+
 #tf_model = keras.Sequential([
 # normalizer,
 # layers.Dense(10000, activation='relu'),
@@ -130,7 +171,7 @@ tf_model = keras.Sequential([
 
 
 #tf_model.compile(optimizer='sgd', loss='mean_squared_error')
-tf_model.compile(loss='mean_absolute_error',optimizer=tf.keras.optimizers.Adam(0.001))#,metrics=['accuracy']) #remove acc ## works also with logarithmic, when increasing learning rate, finishes in less steps but less accurate
+tf_model.compile(loss='mean_absolute_error',optimizer=tf.keras.optimizers.Adam(0.001))#set 0.001#,metrics=['accuracy']) #remove acc ## works also with logarithmic, when increasing learning rate, finishes in less steps but less accurate
 ##https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
 ##mean_squared_error: Mathematically, it is the preferred loss function under the inference framework of maximum likelihood if the distribution of the target variable is Gaussian. It is the loss function to be evaluated first and only changed if you have a good reason.
 ##mean_squared_logaritmic_error: target value has a spread of values and when predicting a large value, you may not want to punish a model as heavily as mean squared error
@@ -155,7 +196,7 @@ with open('report.txt','w') as fh:
 #trained=model.fit(xs, ys, epochs=500)
 history=tf_model.fit(Is[:M], Ts[:M],
                validation_data=(Is[M:], Ts[M:]), ## add this again
-               verbose=1, epochs=100)
+               verbose=1, epochs=60)#set 100
 
 ax = pd.DataFrame(data=history.history).plot(figsize=(15, 7))
 ax.grid()
@@ -178,10 +219,11 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA
 
 
 data = l.generate_synthetic_data(geo1, Vs_geo1, model=model,noise=0)
-# cond=(calc_eta(Vmax,data['Te'])<100)
-# data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
+cond=(calc_eta(Vmax+data['V0'],data['Te'])<100)
+data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
 
-
+# print(max(data['V0']), min(data['V0']))
+# print(calc_eta(data['V0']+4,data['Te']))
 I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
 
