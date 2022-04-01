@@ -1,6 +1,7 @@
 from langmuir import *
 import numpy as np
 import matplotlib.pyplot as plt
+from finite_radius_extrapolated import *
 
 # plasma = [ # Approximately F-region plasma
 #     Electron(n=1e11, T=1000),

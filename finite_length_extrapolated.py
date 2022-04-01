@@ -30,6 +30,8 @@ from scipy.constants import value as constants
 from copy import deepcopy
 import numpy as np
 import os
+import matplotlib.pyplot as plt
+
 
 def finite_length_current_density(geometry, species, V=None, eta=None,
                                   z=None, zeta=None, normalization=None):
@@ -339,10 +341,14 @@ def finite_length_current(geometry, species,
 
             weight = (lambd_ps[1]-lambd_p)/(lambd_ps[1]-lambd_ps[0])
             int_gs = weight*int_gs[0] + (1-weight)*int_gs[1]
+        # print(eta)
+        # eta=np.array([50,70,120,135])
+        # print(etas)
+        attracted = np.where((eta>=0.)&(eta<=100))[0]
+        # print(eta[attracted])
 
-        attracted = np.where(eta>=0.)[0]
         repelled  = np.where(eta< 0.)[0]
-        #over      = np.where(eta>100.)[0]
+        over      = np.where(eta>100.)[0]
 
         def powerlaw( x, a, b, c):
             return a*(b+x)**c
@@ -354,11 +360,33 @@ def finite_length_current(geometry, species,
         #func = interp1d(etas, int_gs)
 
         popt, pcov = curve_fit(powerlaw, etas,int_gs)
+        func = interp1d(etas, int_gs)
         ##### example: I[indices_p]=I0*powerlaw(eta[indices_p], *popt)
-
-        I[attracted] *= powerlaw(eta[attracted], *popt)
-        #I[attracted] *= func(eta[attracted])
+        I_old=I
+        I[over] *= powerlaw(eta[over], *popt)
+        I[attracted] *= func(eta[attracted])
+        #####I[attracted] *= func(eta[attracted])
         I[repelled]  *= lambd_p
+
+    #     #######cmap = plt.get_cmap('plasma', len(ax[1]))
+    #     plt.figure(1)
+    #     plt.xlabel('etas')
+    #     plt.ylabel('I_etas')
+    #     test=np.array([100,120,130,140,160])
+    # #    #######plt.scatter(eta[repelled],lambd_p,marker='.',c='k',label='etas repelled')
+    #     plt.scatter(etas,int_gs,marker='.',c='k',label='etas table')
+    #     plt.plot(etas,powerlaw(etas, *popt),linewidth=0.6,c='k',label='etas powerlaw')
+    #     plt.plot(eta[attracted],func(eta[attracted]),marker='.',c='r',label='etas attracted int')
+    #     plt.plot(eta[over],powerlaw(eta[over], *popt),marker='.',c='b',label='etas over ex')
+    #     plt.plot(test,powerlaw(test, *popt),linewidth=0.3,c='k')
+    #     #######plt.plot(etas,I_old,linewidth=0.5,c='k',label='I old')
+    #
+    #     leg = plt.legend()
+    #
+    #     plt.tight_layout()
+    #     plt.show()
+    #     # breakpoint()
+
 
     else:
         raise ValueError("interpolate must be either 'g' or 'I'")

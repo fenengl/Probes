@@ -29,7 +29,7 @@ geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
 # a=l.Electron(n=1e11, T=1600).debye*1 ### *1 for cylinders
 # print(a)
 # breakpoint()
-model = l.finite_length_current
+model = finite_length_current
 model_sphere=finite_radius_current
 #model_sphere2=l.OML_current
 
@@ -59,7 +59,7 @@ N = 50000 #### has been increased from 5000 ---increase to 50000
 
 ns  = rand_log(N, [4e10, 3e11])  # densities
 #ns=np.repeat(1e11,N)
-Ts = rand_uniform(N, [800, 3000]) # temperatures
+Ts = rand_uniform(N, [400, 3000]) # temperatures
 #Ts=np.repeat(1600, N)
 V0s = rand_uniform(N, [-1,  0])   # floating potentials
 #V0s = np.linspace(-1, 0,num=N)
@@ -67,9 +67,9 @@ V0s = rand_uniform(N, [-1,  0])   # floating potentials
 Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 Vmax=np.max(Vs_all)
 
-cond=(calc_eta(Vmax+V0s,Ts)<100)
-Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
-N=len(Ts)
+# cond=(calc_eta(Vmax+V0s,Ts)<100)
+# Ts,V0s,ns=Ts[cond],V0s[cond],ns[cond]
+# N=len(Ts)
 
 
 
@@ -219,14 +219,16 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA
 
 
 data = l.generate_synthetic_data(geo1, Vs_geo1, model=model,noise=0)
-cond=(calc_eta(Vmax+data['V0'],data['Te'])<100)
-data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
+# cond=(calc_eta(Vmax+data['V0'],data['Te'])<100)
+# data['Te'],data['V0'],data['ne'],data['alt']=data['Te'][cond],data['V0'][cond],data['ne'][cond],data['alt'][cond]
 
 # print(max(data['V0']), min(data['V0']))
 # print(calc_eta(data['V0']+4,data['Te']))
 I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
-
+print(data['ne'])
+print( data['Te'])
+print(data['V0'])
 for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
     I_geo1[i] = model_sphere(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2[i] = model(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
@@ -250,4 +252,12 @@ plt.ylabel('Altitude $[\mathrm{km}]$')
 
 plt.legend()
 plt.savefig('ICI2_predict.png', bbox_inches="tight")
+plt.show()
+
+debye=np.zeros_like(data['Te'])
+
+for i,dens,Temp in zip(count(),data['ne'], data['Te']):
+    debye[i]=l.Electron(n=dens, T=Temp).debye
+plt.figure()
+plt.plot(debye,data['alt'])
 plt.show()

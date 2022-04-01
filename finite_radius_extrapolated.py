@@ -126,7 +126,17 @@ def finite_radius_current(geometry, species, V=None, eta=None, normalization=Non
 
     q, m, n, T = species.q, species.m, species.n, species.T
     kappa, alpha = species.kappa, species.alpha
+    ######T=530
+    ######n=1e11
+###### V=3.5
+    #####T=600
+    ####n=1e11
+    ####V=3.5
 
+    #print(species.n)
+    #print(species.T)
+    #print(species.q)
+    #print(species.m)
     tol = 1e-6 # For float comparisons
 
     k = constants('Boltzmann constant')
@@ -169,7 +179,7 @@ def finite_radius_current(geometry, species, V=None, eta=None, normalization=Non
     def powerlaw( x, a, b, c):
         return a*(b+x)**c
     #
-    # axtest=np.array([0, 0.2, 0.3, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20, 50, 100])
+    ############axtest=np.array([0, 0.2, 0.3, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20, 50, 100])
     # #alpha=0.2
     # print(alpha,tol,1/kappa)
 
@@ -182,6 +192,9 @@ def finite_radius_current(geometry, species, V=None, eta=None, normalization=Non
         popt, pcov = curve_fit(powerlaw, ax[1], I_etas)#,bounds=(0, [1, 1, 0.5]))
         # print(popt)
         I[indices_p]=I0*powerlaw(eta[indices_p], *popt)
+
+
+        ############
 
         # cmap = plt.get_cmap('plasma', len(ax[1]))
         # plt.figure(1)
@@ -204,9 +217,15 @@ def finite_radius_current(geometry, species, V=None, eta=None, normalization=Non
         # plt.plot(axtest,powerlaw(axtest, *popt),linewidth=0.5,c='b',label='a*(b+x)**c')
         # plt.scatter(eta[indices_p],powerlaw(eta[indices_p], *popt),marker='.',c='r',label='eta =%.1f' %eta[indices_p])
         # leg = plt.legend()
+        #
         # plt.tight_layout()
         # plt.show()
         # breakpoint()
+
+
+        ############
+
+
         #if(kappa != float('inf') or alpha != 0):
         #    logger.warning("Using pure Laframboise tables discards spectral indices kappa and alpha")
     else:
