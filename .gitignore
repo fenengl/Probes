@@ -15,3 +15,30 @@ check.py
 **_trick.py
 ICI2_extrapolated.py
 extra_material
+
+
+# Python
+__pycache__/
+.DS_Store
+.pytest_cache
+.coverage
+**.pyc
+**.egg-info
+_build
+
+# PTetra
+*.topo
+*.msh
+*.prcnd
+fort.20
+*.log
+*.vtk
+*.rdm
+*.out
+mptetra
+PTetraProbes/Sphere_1.87R_3.5V_3.5V_600K/meshpic.dat
+PTetraProbes/Sphere_1.87R_3.5V_3.5V_600K/mptetra
+PTetraProbes/geometry/msh2topo
+PTetraProbes/mptetra
+PTetraProbes/Sphere_1.183R_3.5V_3.5V_1500K/mptetra
+PTetraProbes/Sphere_1.183R_3.5V_3.5V_1500K/meshpic.dat

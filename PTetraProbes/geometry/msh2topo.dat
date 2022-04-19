@@ -1,0 +1,11 @@
+inputFormat: 'gmsh1', 'gmsh2', 'abaqus1', abaqus2' or 'spis'
+outputformat: 'Vu' or 'topo'
+&readoptions
+  inputFormat='gmsh2'
+  outputFormat='topo'
+/
+
+$begin
+nfields=0
+sphere_1.183R.msh
+$end
