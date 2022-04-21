@@ -16,7 +16,7 @@ parser.add_argument('folder', help='Folder to PTetra simulation')
 parser.add_argument('column', default='sc_i_tot', nargs='?', help='Which column of pictetra.hst to plot')
 parser.add_argument('-r', metavar='tau', type=float, default=1e-7, help='Relaxation time')
 parser.add_argument('--OML', action='store_true', help='Compare current with OML theory')
-parser.add_argument('--FL', action='store_true', help='Compare current with finite-length theory')
+parser.add_argument('--FR', action='store_true', help='Compare current with finite-radius theory')
 args = parser.parse_args()
 
 df = read_hst(args.folder)
@@ -28,7 +28,7 @@ last_value = av.iat[-1]
 if args.OML:
     comparison_value = l.OML_current(geometry, electron, V=voltages[0])
 
-if args.FL:
+if args.FR:
     comparison_value = l.finite_radius_current(geometry, electron, V=voltages[0])
     # comparison_value = l.finite_length_current(geometry, electron, V=voltages[0])
 
@@ -45,7 +45,7 @@ print()
 
 print("Last plotted value: {:.3g}".format(last_value))
 
-if args.OML or args.FL:
+if args.OML or args.FR:
     print("Comparsion current: {:.3g}".format(comparison_value*1e6))
     print("Error:              {:.2f}%".format(100*(last_value-comparison_value)/comparison_value, "%"))
     plt.axhline(comparison_value, linestyle='--', color='k', label='Comparison')
