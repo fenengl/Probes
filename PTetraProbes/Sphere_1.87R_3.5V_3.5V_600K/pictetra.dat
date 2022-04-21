@@ -197,7 +197,7 @@ $end plasmaparameters
 //             interpolation of the electric field
 
 &numericalparameters
-  netotIni=10000000
+  netotIni=50000000
   nInMain=.true.
   speedup=1.
   prefill=.true.
