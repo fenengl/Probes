@@ -154,7 +154,7 @@ $end plasmaparameters
   restartfrom='null'
   rdmfmt=.false.
   ntmax=10000000
-  tstop=10e-6
+  tstop=20e-6
   epsildt=3.0
   dtrdm=10000000
   dtdia=100
@@ -197,7 +197,7 @@ $end plasmaparameters
 //             interpolation of the electric field
 
 &numericalparameters
-  netotIni=5000000
+  netotIni=10000000
   nInMain=.true.
   speedup=1.
   prefill=.true.

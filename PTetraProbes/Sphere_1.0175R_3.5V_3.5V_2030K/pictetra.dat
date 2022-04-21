@@ -53,12 +53,12 @@
 //  repeat as many times as there are ion species
 $begin plasmaparameters
   ne=1e11
-  te=0.051704
+  te=0.174932
   vexyz=0.  0.      0.
   mi=1.
   qi=1.
   ni=1e11
-  ti=0.051704
+  ti=0.174932
   vixyz=0.  0.      0.
 $end plasmaparameters
 
