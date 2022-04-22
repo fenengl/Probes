@@ -31,7 +31,6 @@ _build
 *.msh
 *.prcnd
 fort.20
-*.log
 *.vtk
 *.rdm
 *.out
