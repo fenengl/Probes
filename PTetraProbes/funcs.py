@@ -36,6 +36,21 @@ def read_hst(folder_name):
 
     return df
 
+def read_history(folder_name):
+    """ Read PTetra history file in folder """
+
+    file_name = os.path.join(folder_name, 'history.dat')
+
+    column_names = [
+    'n','time','ne','ni','KE','PE','V_0','I_0','Q_0','V_1','I_1','Q_1']
+
+    df = pd.read_csv(file_name, sep='\s+', skiprows=4, names=column_names, index_col=0)
+
+    # Add new column sc_i_tot for total collected spacecraft current
+    df = df.assign(I_tot=lambda a: a.I_0 + a.I_1)
+
+    return df
+
 def parse_parameters(folder_name):
     """
     Parses geometry and plasma parameters from folder name and the pictetra.dat

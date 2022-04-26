@@ -2,6 +2,7 @@
 """
 Plotting script for PTetra
 Author: Sigvald Marholm, 2022
+        Sayan Adhikari, 2022
 """
 import sys
 import numpy as np
@@ -21,6 +22,7 @@ parser.add_argument('-r', metavar='tau', type=float, default=1e-7, help='Relaxat
 parser.add_argument('--OML', action='store_true', help='Compare current with OML theory')
 parser.add_argument('--FR', action='store_true', help='Compare current with finite-radius theory')
 parser.add_argument('--FRE', action='store_true', help='Compare current with finite-radius extrapolated theory')
+parser.add_argument('--PUNC', action='store_true', help='Compare current with PUNC++')
 args = parser.parse_args()
 
 df = read_hst(args.folder)
@@ -38,6 +40,12 @@ if args.FR:
 if args.FRE:
     comparison_value = fre.finite_radius_current(geometry, electron, V=voltages[0])
 
+if args.PUNC:
+    df_punc = read_history(pjoin('..','PUNCProbes',args.folder))
+    av_punc = average(df_punc, 'I_tot', args.r)
+    last_value_punc = av_punc.iat[-1]
+
+
 geometry_str = "cylinder" if isinstance(geometry, l.Cylinder) else "sphere"
 
 print("Geometry:           {}".format(geometry_str))
@@ -49,7 +57,9 @@ print("Density:            {:.3g} /m^3".format(electron.n))
 print("Debye length:       {:.3g} mm".format(electron.debye*1e3))
 print()
 
-print("Last plotted value: {:.3g}".format(last_value))
+print("Last plotted value PTetra: {:.3g}".format(last_value))
+if args.PUNC:
+    print("Last plotted value PUNC++: {:.3g}".format(last_value_punc))
 
 if args.OML or args.FR or args.FRE:
     print("Comparsion current: {:.3g}".format(comparison_value*1e6))
@@ -65,7 +75,9 @@ if args.OML or args.FR or args.FRE:
         plt.axhline(comparison_value, linestyle='--', color='k', label='Comparison FR Ext.')
 
 plt.plot(df.time*1e6, df[args.column], '#ccc', zorder=-100, label='Raw')
-plt.plot(df.time*1e6, av, label=r'Averaged ($\tau={:g}\,\mathrm{{\mu s}}$)'.format(args.r*1e6))
+plt.plot(df.time*1e6, av, label=r'Averaged ($\tau={:g}\,\mathrm{{\mu s}}$) (PTetra)'.format(args.r*1e6))
+if args.PUNC:
+    plt.plot(df_punc.time*1e6, av_punc, label=r'Averaged ($\tau={:g}\,\mathrm{{\mu s}}$) (PUNC++)'.format(args.r*1e6))
 plt.xlabel('Time [us]')
 plt.ylabel('Quantity: {}'.format(args.column))
 # plt.ylabel('Current [A]')
