@@ -26,4 +26,4 @@ set -o nounset # Treat any unset variables as an error
 # conda activate /cluster/projects/nn9299k/software/conda/envs/punc
 module list
 
-./interaction setup.ini
+./interaction setup.ini --time.dt 3.190391E-09
