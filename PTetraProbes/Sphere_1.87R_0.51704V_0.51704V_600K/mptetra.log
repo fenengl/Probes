@@ -1,0 +1,131 @@
+ call readmesh
+ call inigeo
+ indlin(nv+1)-1=      281659
+ call readinput
+e_field=  -0.000000E+00  -0.000000E+00  -0.000000E+00
+ call voisinOrdonne
+ inj_nstr=           0  inj_ninj=   860000000000.00000     
+ call structures
+ sc_nst2D=           2
+ sc_nst1D=           0
+ sc_nstruc=           2
+ sc_listBias=           1           2
+ sc_nodesBias=           1
+ sc_bias=   0.0000000000000000     
+ table of structures
+i= 0 sc_table=    1
+i= 1 sc_table=    2
+i= 2 sc_table=    3
+
+structure areas
+   0     5.0449E-02
+   1     6.2366E-04
+   2     6.2366E-04
+
+ call solarview
+ f107=   0.0000000000000000       sc_photoel=   0.0000000000000000        0.0000000000000000     
+ call sccinit
+ call globmat
+ procid=           0  call inipop
+volmin=  4.31E-10 volmax=  2.01E-07 voltot=  1.06E-03
+ procid=           0  netot=    15000000
+ procid=           0 i=           1 npepop=    15000000  wepop=   1.7672735109532434     
+ procid=           0 nitot=    15000000
+ procid=           0 i=           1 npipop=    15000000  wipop=   1.7672735109532434     
+ procid=           0  call inikin
+ call computemutuals
+ call ilut
+ write(uprcnd)
+   call pgmres
+   call pgmres
+ sc_c=
+   6.896134E-13  -1.514983E-13
+  -1.614707E-13   6.998308E-13
+ sc_ci=
+   1.527514E+12   3.306739E+11
+   3.524406E+11   1.505213E+12
+ procid=           0  call avancet
+ dt_ion=   1.1207075430812045E-006
+ dt_kin_elec=   8.3007217085044771E-009
+ dt_omp=   3.5220210592577111E-008
+ dt=   8.3007217085044771E-009  speedup=   1.0000000000000000       dtloc=   8.3007217085044771E-009
+   call pgmres
+ wAvCumul=   8.2663658432743543E-003
+ it=           1
+ scc_cumul=   8.2663658432743543E-003
+   call pgmres
+ wAvCumul=   1.6464398882293854E-002
+ it=           2
+ scc_cumul=   1.6464398882293854E-002
+   call pgmres
+ wAvCumul=   2.4594663981017572E-002
+ it=           3
+ scc_cumul=   2.4594663981017572E-002
+   call pgmres
+ wAvCumul=   3.2657721334032434E-002
+ it=           4
+ scc_cumul=   3.2657721334032434E-002
+   call pgmres
+ wAvCumul=   4.0654126505151975E-002
+ it=           5
+ scc_cumul=   4.0654126505151975E-002
+   call pgmres
+ wAvCumul=   4.8584430465695994E-002
+ it=           6
+ scc_cumul=   4.8584430465695994E-002
+   call pgmres
+ wAvCumul=   5.6449179632453786E-002
+ it=           7
+ scc_cumul=   5.6449179632453786E-002
+   call pgmres
+ wAvCumul=   6.4248915905333562E-002
+ it=           8
+ scc_cumul=   6.4248915905333562E-002
+   call pgmres
+ wAvCumul=   7.1984176704700656E-002
+ it=           9
+ scc_cumul=   7.1984176704700656E-002
+   call pgmres
+ wAvCumul=   7.9655495008407046E-002
+ it=          10
+ scc_cumul=   7.9655495008407046E-002
+   call pgmres
+ wAvCumul=   8.7263399388514795E-002
+ it=          11
+ scc_cumul=   8.7263399388514795E-002
+   call pgmres
+ wAvCumul=   9.4808414047715922E-002
+ it=          12
+ scc_cumul=   9.4808414047715922E-002
+   call pgmres
+ wAvCumul=  0.10229105885545123     
+ it=          13
+ scc_cumul=  0.10229105885545123     
+   call pgmres
+ wAvCumul=  0.10971184938373051     
+ it=          14
+ scc_cumul=  0.10971184938373051     
+   call pgmres
+ wAvCumul=  0.11707129694265672     
+ it=          15
+ scc_cumul=  0.11707129694265672     
+   call pgmres
+ wAvCumul=  0.12436990861565647     
+ it=          16
+ scc_cumul=  0.12436990861565647     
+   call pgmres
+ wAvCumul=  0.13160818729441923     
+ it=          17
+ scc_cumul=  0.13160818729441923     
+   call pgmres
+ wAvCumul=  0.13878663171354774     
+ it=          18
+ scc_cumul=  0.13878663171354774     
+   call pgmres
+ wAvCumul=  0.14590573648492214     
+ it=          19
+ scc_cumul=  0.14590573648492214     
+   call pgmres
+ wAvCumul=  0.15296599213177975     
+ it=          20
+ scc_cumul=  0.15296599213177975     

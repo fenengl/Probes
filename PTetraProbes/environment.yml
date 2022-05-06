@@ -1,0 +1,17 @@
+name: ptetra
+channels:
+  - default
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - numpy
+  - openmpi-mpifort
+  - libgfortran
+  - gmsh
+  - openssl
+  - p7zip
+  - pip:
+    - matplotlib
+    - pandas
+    - langmuir
