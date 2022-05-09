@@ -11,7 +11,7 @@ import langmuir as l
 from funcs import *
 from argparse import ArgumentParser
 from os.path import join as pjoin
-sys.path.insert(1, '../')
+sys.path.insert(1, '../Infer_Temp/')
 import finite_radius_extrapolated as fre
 # from finite_radius_extrapolated import *
 

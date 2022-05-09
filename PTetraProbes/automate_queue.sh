@@ -47,7 +47,7 @@ then
       sed -i 's/.*debye = .*/debye = '"${debye[0]}"';/' "$ndir"/"$geofile"
       sed -i 's/.*r = .*/r = '"${proberadius[0]}"';/' "$ndir"/"$geofile"
       echo ""
-      gmsh -3 -format msh2 "$ndir"/"$geofile"
+      gmsh -3 -format msh2 -optimize "$ndir"/"$geofile"
     fi
   fi
   echo "Converting .msh to .topo"
