@@ -15,8 +15,8 @@ from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
 from finite_length_extrapolated import *
 from data_gen import *
-from TF import *
-from RBF import *
+from network_TF import *
+from network_RBF import *
 #from tensorflow.keras.layers import Normalization
 
 """
@@ -50,7 +50,7 @@ N = 50000 ## how many data points
 if gendata == 1:
     synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry)
 elif gendata == 0:
-    synth_data=pd.read_csv('cyl_synth_data.csv',index_col=0)
+    synth_data=pd.read_csv('synth_data_cyl.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
