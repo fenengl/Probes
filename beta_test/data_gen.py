@@ -28,7 +28,7 @@ model1 = finite_radius_current
 model2 = finite_length_current
 
 Vs_geo1 = np.array([4]) # bias voltages
-Vs_geo2 = np.array([8]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
+Vs_geo2 = np.array([4]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
 
 geometry='mNLP'
 ####l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
@@ -60,5 +60,5 @@ data=np.append(np.array([ns,Ts,V0s]).T,Is,axis=1)
 df_cols = [*['ns', 'Ts', 'V0s'], *Is_cols]
 synth_data=pd.DataFrame(data,columns=df_cols)
     #print(synth_data)
-
+print(V0s)
 synth_data.to_csv('Beta_mNLP.csv')
