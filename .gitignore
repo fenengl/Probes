@@ -41,6 +41,6 @@ PTetraProbes/geometry/msh2topo
 PTetraProbes/mptetra
 PTetraProbes/Sphere_1.183R_3.5V_3.5V_1500K/mptetra
 PTetraProbes/Sphere_1.183R_3.5V_3.5V_1500K/meshpic.dat
-
+core.*
 # PUNC++
 fields
