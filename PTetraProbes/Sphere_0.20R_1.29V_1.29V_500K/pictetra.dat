@@ -197,7 +197,7 @@ $end plasmaparameters
 //             interpolation of the electric field
 
 &numericalparameters
-	netotIni=60000000
+	netotIni=50000000
   nInMain=.true.
   speedup=1.
   prefill=.true.
@@ -239,7 +239,7 @@ $end plasmaparameters
   sc_fixedpotentials=.true.
 /
 $begin sc_fixedPot
-		0.86	0.86
+		1.29	1.29
 $end sc_fixedPot
 
 //Definition of imposed collected current (A) by each satellite structure

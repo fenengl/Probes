@@ -2,10 +2,9 @@
 
 #SBATCH --job-name=600K
 #SBATCH --account=nn9299k
-#SBATCH --time=5-00:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
-# #SBATCH --mem-per-cpu=16000M
+#SBATCH --time=24:00:00
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=16000M
 # #SBATCH --mem-per-cpu=3920M
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=sadhi@uio.no

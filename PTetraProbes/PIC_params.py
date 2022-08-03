@@ -14,7 +14,7 @@ def main():
     ne = np.ones(len(eta))*1e11
     teK = np.linspace(500,1000,len(eta)) #np.ones(len(eta))*600
     te = teK/11604.525
-    RpLD = np.array([0, 0.2, 0.3, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20, 50, 100])
+    RpLD = np.array([0.2, 0.5, 2, 5, 10, 20, 100, 120])
 
     mE      = constants('electron mass')
     eps0    = constants('electric constant')
