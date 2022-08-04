@@ -24,20 +24,20 @@ from network_RBF import *
 Geometry, Probes and bias voltages
 """
 
-l1=25e-3###25
+rs2=20e-3###25
 r0=0.255e-3
-rs=20e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
+rs=10e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
 
 geo1 = l.Sphere(r=rs)
-geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
+geo2 = l.Sphere(r=rs2)
 
 model1 = finite_radius_current
-model2 = finite_length_current
+model2 = finite_radius_current
 
-Vs_geo1 = np.array([4]) # bias voltages
-Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
+Vs_geo1 = np.array([4,4,4,4]) # bias voltages
+Vs_geo2 = np.array([2.5,7]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
 
-geometry='mNLP'
+geometry='sphere'
 ####l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
 
 """
@@ -51,7 +51,7 @@ N = 10000 ## how many data points
 if gendata == 1:
     synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry)
 elif gendata == 0:
-    synth_data=pd.read_csv('synth_data_mNLP.csv',index_col=0)
+    synth_data=pd.read_csv('synth_data_sphere.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
