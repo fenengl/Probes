@@ -7,5 +7,5 @@ outputformat: 'Vu' or 'topo'
 
 $begin
 nfields=0
-sphere_0.2R.msh
+sphere_0.3R.msh
 $end
