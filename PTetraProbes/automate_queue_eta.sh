@@ -9,7 +9,7 @@ baseproject="Sphere_"$baserad"R_3.5V_3.5V_600K"
 temp=(500 562.5 625.0 687.5 750.0 812.5 875.0 937.5 1000.0)  #temperature in K
 tempev=(0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862)  #temperature in eV
 
-debye=(0.004880)
+debye=(0.004880 0.004880 0.004880 0.004880 0.004880 0.004880 0.004880 0.004880 0.004880)
 proberadius=(0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2)  #in terms of debye length
 # pvolt=(4.5 5.5 6.5)
 pvolt=(1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48)
@@ -47,7 +47,7 @@ then
       then
         echo ".geo file created"
         echo "Modifying .geo file"
-        sed -i 's/.*debye = .*/debye = '"${debye[0]}"';/' "$ndir"/"$geofile"
+        sed -i 's/.*debye = .*/debye = '"${debye[$i]}"';/' "$ndir"/"$geofile"
         sed -i 's/.*r = .*/r = '"${proberadius[$i]}"'*debye;/' "$ndir"/"$geofile"
         echo ""
         gmsh -3 -format msh2 -optimize "$ndir"/"$geofile"

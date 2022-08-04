@@ -34,6 +34,7 @@ fort.20
 *.vtk
 *.rdm
 *.out
+**.log
 mptetra
 PTetraProbes/Sphere_1.87R_3.5V_3.5V_600K/meshpic.dat
 PTetraProbes/Sphere_1.87R_3.5V_3.5V_600K/mptetra
