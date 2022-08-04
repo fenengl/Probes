@@ -53,12 +53,12 @@
 //  repeat as many times as there are ion species
 $begin plasmaparameters
   ne=1e11
-	te=0.0431
+	te=0.0700
   vexyz=0.  0.      0.
   mi=1.
   qi=1.
   ni=1e11
-	ti=0.0431
+	ti=0.0700
   vixyz=0.  0.      0.
 $end plasmaparameters
 
@@ -239,7 +239,7 @@ $end plasmaparameters
   sc_fixedpotentials=.true.
 /
 $begin sc_fixedPot
-		1.29	1.29
+		5.60	5.60
 $end sc_fixedPot
 
 //Definition of imposed collected current (A) by each satellite structure

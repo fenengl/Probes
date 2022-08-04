@@ -3,7 +3,7 @@
 // STEP 1: SET VARIABLES
 
 debye = 0.004880;
-r = 2.0;
+r = 0.2*debye;
 R = r+10*debye;  // Outer radius
 Res = 1.5*debye; // Resolution on outer boundary
 res = r/5;       // Resolution on inner boundary

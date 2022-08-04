@@ -1,0 +1,51 @@
+ call readmesh
+ call inigeo
+ indlin(nv+1)-1=      238189
+ call readinput
+e_field=  -0.000000E+00  -0.000000E+00  -0.000000E+00
+ call voisinOrdonne
+ inj_nstr=           0  inj_ninj=   860000000000.00000     
+ call structures
+ sc_nst2D=           2
+ sc_nst1D=           0
+ sc_nstruc=           2
+ sc_listBias=           1           2
+ sc_nodesBias=           1
+ sc_bias=   0.0000000000000000     
+ table of structures
+i= 0 sc_table=    1
+i= 1 sc_table=    2
+i= 2 sc_table=    3
+
+structure areas
+   0     3.1008E-02
+   1     5.9409E-06
+   2     5.9407E-06
+
+ call solarview
+ f107=   0.0000000000000000       sc_photoel=   0.0000000000000000        0.0000000000000000     
+ call sccinit
+ call globmat
+ procid=           0  call inipop
+volmin=  6.20E-13 volmax=  1.63E-07 voltot=  5.13E-04
+ procid=           0  netot=    12500000
+ procid=           0 i=           1 npepop=    12500000  wepop=   1.0255778637165485     
+ procid=           0 nitot=    12500000
+ procid=           0 i=           1 npipop=    12500000  wipop=   1.0255778637165485     
+ procid=           0  call inikin
+ call computemutuals
+ call ilut
+ write(uprcnd)
+   call pgmres
+   call pgmres
+ sc_c=
+   5.276694E-14  -1.162225E-14
+  -1.576944E-14   5.749676E-14
+ sc_ci=
+   2.016969E+13   4.077051E+12
+   5.531874E+12   1.851048E+13
+ procid=           0  call avancet
+ dt_ion=   1.1971283151288417E-007
+ dt_kin_elec=   3.3520562941951411E-010
+ dt_omp=   3.5220210592577111E-008
+ dt=   3.3520562941951411E-010  speedup=   1.0000000000000000       dtloc=   3.3520562941951411E-010

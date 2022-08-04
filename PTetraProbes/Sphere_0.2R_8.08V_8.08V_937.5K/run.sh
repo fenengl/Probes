@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=Rp.50
+#SBATCH --job-name=
 #SBATCH --account=nn9299k
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=4
