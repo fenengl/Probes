@@ -16,13 +16,14 @@ def rand_log(N, range):
 def rand_uniform(N, range):
     """Generate N uniformly distributed numbers in range"""
     return range[0]+(range[1]-range[0])*np.random.rand(N)
-
 l1=25e-3
 r0=0.255e-3
 rs=10e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters
 
+
 geo1 = l.Sphere(r=rs)
 geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
+
 
 model1 = finite_radius_current
 model2 = finite_length_current
@@ -42,7 +43,7 @@ N = 5000 ## how many data points
 
 ns  =rand_log(N, [4e10, 3e11]) # densities
 Ts = rand_uniform(N, [600, 3000]) # temperatures### or 800
-V0s =rand_uniform(N, [-2,  0]) # floating potentials
+V0s =rand_uniform(N, [-1,  0]) # floating potentials
 
 
     # Generate probe currents corresponding to plasma parameters

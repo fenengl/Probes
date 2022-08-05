@@ -49,4 +49,6 @@ def random_synthetic_data(N,geo1,geo2,model1, model2,Vs_geo1,Vs_geo2,geometry):
         synth_data.to_csv('synth_data_cyl.csv')
     elif geometry=='mNLP':
         synth_data.to_csv('synth_data_mNLP.csv')
+    elif geometry=='sphere':
+        synth_data.to_csv('synth_data_sphere.csv')
     return synth_data

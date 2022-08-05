@@ -14,30 +14,32 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
 from finite_length_extrapolated import *
-from finite_radius_extrapolated import *
 from data_gen import *
 from network_TF import *
 from network_RBF import *
+import math
+import scipy.constants as sc
+
 #from tensorflow.keras.layers import Normalization
 
 """
 Geometry, Probes and bias voltages
 """
 
-l1=25e-3###25
+l1=25e-3
+l2=15e-3
 r0=0.255e-3
-rs=20e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
 
-geo1 = l.Sphere(r=rs)
-geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
+geo1 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
+geo2 = l.Cylinder(r=r0, l=l2, lguard=float('inf'))
 
-model1 = finite_radius_current
+model1 = finite_length_current
 model2 = finite_length_current
 
 Vs_geo1 = np.array([4]) # bias voltages
-Vs_geo2 = np.array([2.5,4,5.5,10]) # bias voltages last one was supposed to be 7- electronics issue caused it to be 10V
+Vs_geo2 = np.array([2.5,7])#,5.5]) # bias voltages
 
-geometry='mNLP'
+geometry='cylinder'
 ####l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
 
 """
@@ -51,7 +53,7 @@ N = 10000 ## how many data points
 if gendata == 1:
     synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry)
 elif gendata == 0:
-    synth_data=pd.read_csv('synth_data_mNLP.csv',index_col=0)
+    synth_data=pd.read_csv('synth_data_cyl.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
@@ -59,6 +61,7 @@ ns =np.array(synth_data.iloc[:,0])
 Ts =np.array(synth_data.iloc[:,1])
 V0s=np.array(synth_data.iloc[:,2])
 Is =np.array(synth_data.iloc[:,3:])
+
 
 """
 PART 2: TRAIN AND TEST THE REGRESSION / TensorFlow NETWORK
@@ -86,18 +89,15 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA (IRI)
 """
 Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 
-
-data = l.generate_synthetic_data(geo2, Vs_all, model=model2,noise=0)
-
+data = l.generate_synthetic_data(geo2, Vs_all, model=model1,noise=0)
 
 I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
- #####3 here is the problem:
+
 for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
     I_geo1[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 I=np.append(I_geo1,I_geo2,axis=1)
-
 
 pred = net_model.predict(I)
 
@@ -111,26 +111,6 @@ plt.legend()
 plt.savefig('predict.png', bbox_inches="tight")
 plt.show()
 
-maxTe=data['Te'].max()
-minTe=data['Te'].min()
-
-
-maxNe=data['ne'].max()
-minNe=data['ne'].min()
-
-debyemax=l.Electron(n=maxNe, T=maxTe).debye
-debyemin=l.Electron(n=minNe, T=minTe).debye
-debyeminmax=l.Electron(n=minNe, T=maxTe).debye
-debyemaxmin=l.Electron(n=maxNe, T=minTe).debye
-print(debyemax)
-print(debyemin)
-print(debyeminmax)
-print(debyemaxmin)
-
-print(maxNe)
-print(minNe)
-print(maxTe)
-print(minTe)
 
 debye = np.zeros(len(data['Te']))
 
@@ -147,3 +127,9 @@ plt.savefig('debye.png', bbox_inches="tight")
 plt.show()
 
 print(10e-3)
+
+
+
+#print_table(
+#    [['RMSE'              , 'RMSRE'                  ],
+#     [rms_error(data['Te'], pred), rms_rel_error(data['Te'] , pred)]])
