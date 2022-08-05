@@ -37,7 +37,7 @@ def tensorflow_network(Is_sph,Is_cyl,Ts,M):
     normal2,
     layers.Dense(40, activation='relu', input_shape=[1]), #50
     layers.Dense(40, activation='relu',),
-    layers.Dense(1, activation='relu')
+    layers.Dense(4, activation='relu')
     ],
     name="B")
 
@@ -57,7 +57,7 @@ def tensorflow_network(Is_sph,Is_cyl,Ts,M):
     combined = layers.concatenate([A.output, B.output])
     # apply a FC layer and then a regression prediction on the
     # combined outputs
-    z = layers.Dense(2, activation="relu")(combined)
+    z = layers.Dense(5, activation="relu")(combined)
     z = layers.Dense(1, activation="relu")(z)
     # our model will accept the inputs of the two branches and
     # then output a single value
@@ -100,7 +100,7 @@ def tensorflow_network(Is_sph,Is_cyl,Ts,M):
         plt.savefig('correlation.png', bbox_inches="tight")
         plt.show()
 
-        return pred,results,history,tf_model
+        return pred,results,history,merged_model
 
 
 

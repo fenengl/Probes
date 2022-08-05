@@ -15,7 +15,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
 from finite_length_extrapolated import *
 from data_gen import *
-from network_TF import *
+from network_TF_ne import *
 from network_RBF import *
 #from tensorflow.keras.layers import Normalization
 
@@ -23,8 +23,8 @@ from network_RBF import *
 Geometry, Probes and bias voltages
 """
 
-l1=15e-3
-l2=40e-3
+l1=25e-3
+l2=25e-3
 r0=0.255e-3
 
 geo1 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
@@ -33,8 +33,8 @@ geo2 = l.Cylinder(r=r0, l=l2, lguard=float('inf'))
 model1 = finite_length_current
 model2 = finite_length_current
 
-Vs_geo1 = np.array([5.5]) # bias voltages
-Vs_geo2 = np.array([2.5,4,10])#,5.5]) # bias voltages
+Vs_geo1 = np.array([2.5,5.5]) # bias voltages
+Vs_geo2 = np.array([4,10])#,5.5]) # bias voltages
 
 geometry='cylinder'
 ####l.Electron(n=4e11, T=800).debye*0.2 ### *1 for cylinders
@@ -43,8 +43,8 @@ geometry='cylinder'
 PART 1: GENERATE SYNTHETIC DATA USING LANGMUIR
 
 """
-gendata=1
-N = 50000 ## how many data points
+gendata=0
+N = 10000 ## how many data points
 
 ### adjust the data limits in the class
 if gendata == 1:
@@ -69,13 +69,13 @@ M = int(0.8*N)
 TF=1
 
 if TF == 1:
-    pred,results,history,net_model= tensorflow_network(Is,Ts,M)
+    pred,results,history,net_model= tensorflow_network(Is,V0s,M)
     ax = pd.DataFrame(data=history.history).plot(figsize=(15, 7))
     ax.grid()
     _ = ax.set(title="Training loss and accuracy", xlabel="Epochs")
     _ = ax.legend(["Training loss", "Trainig accuracy"])
 elif TF == 0:
-    pred,net_model= rbf_network(Is,Ts,M)
+    pred,net_model= rbf_network(Is,ns,M)
 else:
     logger.error('Specify whether to use tensorflow or RBF')
 
@@ -99,9 +99,9 @@ pred = net_model.predict(I)
 
 plt.figure()
 
-plt.plot(data['Te'], data['alt'], label='Ground truth')
+plt.plot(data['V0'], data['alt'], label='Ground truth')
 plt.plot(pred, data['alt'], label='Predicted')
-plt.xlabel('Temperature $[\mathrm{K}]$')
+plt.xlabel('density $[\mathrm{K}]$')
 plt.ylabel('Altitude $[\mathrm{km}]$')
 plt.legend()
 plt.savefig('predict.png', bbox_inches="tight")

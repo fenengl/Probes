@@ -39,7 +39,7 @@ def random_synthetic_data(N,geo1,geo2,model1, model2,Vs_geo1,Vs_geo2,geometry):
         Is_geo1[i] = model1(geo1, l.Electron(n=n, T=T),V=V0+Vs_geo1)
         Is_geo2[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
     Is=np.append(Is_geo1,Is_geo2,axis=1)
-    print(Is)
+
     Is_cols = ["Is_{0}".format(x) for x in range(Is.shape[1])]
     data=np.append(np.array([ns,Ts,V0s]).T,Is,axis=1)
     df_cols = [*['ns', 'Ts', 'V0s'], *Is_cols]
