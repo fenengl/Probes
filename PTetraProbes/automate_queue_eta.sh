@@ -44,9 +44,11 @@ then
   for i in `seq 0 $(($numjobs-1))`
   do
     geofile="sphere_"${proberadius[$i]}"R.geo"
-    if [ -f "$ndir"/"$geofile" ]
+    meshfile="sphere_"${proberadius[$i]}"R.msh"
+    topofile="sphere_"${proberadius[$i]}"R.topo"
+    if [ -f "$ndir"/"$geofile" ] && [ -f "$ndir"/"$meshfile" ]  && [ -f "$ndir"/"$topofile" ]
     then
-      echo "Geofile exists"
+      echo "Geofile, meshfile, and topofile exists"
     else
       cp "$ndir"/"$basegeofile" "$ndir"/"$geofile"
       if [ -f "$ndir"/"$geofile" ]
