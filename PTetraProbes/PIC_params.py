@@ -41,11 +41,48 @@ def main():
 
         # print('Eta = %2.2f'%eta[i]+',  DL = %f'%DL_e[i]+' m, omegaPe = %2.2e'%omegaPe[i]+' 1/sec %2.2e'%(omegaPe[i]/2*np.pi)+' Hz, Phi = %2.2f'%phi[i])
 
+    # for j in range(len(RpLD)):
+    #     for i in range(len(eta)):
+    #         Rp[i,j] = RpLD[j]*DL_e[i]
+    #         print('Eta = %2.2f'%eta[i]+',  DL = %f'%DL_e[i]+' m, Te = %2.4f'%te[i]+'eV, Te = %2.4f'%teK[i]+'K,  Phi = %2.2f'%phi[i]+' V, Rp = %f'%Rp[i,j]+' m, Rp = %2.2f'%(Rp[i,j]/DL_e[i])+' LD')
+    print("ETA")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            sys.stdout.write('%2.2f '%eta[i])
+            sys.stdout.flush()
+    print("\nDL_e")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            sys.stdout.write('%f '%DL_e[i])
+            sys.stdout.flush()
+    print("\nTe_eV")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            sys.stdout.write('%2.4f '%te[i])
+            sys.stdout.flush()
+    print("\nTe_K")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            sys.stdout.write('%2.2f '%teK[i])
+            sys.stdout.flush()
+    print("\nphi")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            sys.stdout.write('%2.2f '%phi[i])
+            sys.stdout.flush()
+    print("\nRp_m")
     for j in range(len(RpLD)):
         for i in range(len(eta)):
             Rp[i,j] = RpLD[j]*DL_e[i]
-            print('Eta = %2.2f'%eta[i]+',  DL = %f'%DL_e[i]+' m, Te = %2.4f'%te[i]+'eV, Te = %2.4f'%teK[i]+'K,  Phi = %2.2f'%phi[i]+' V, Rp = %f'%Rp[i,j]+' m, Rp = %2.2f'%(Rp[i,j]/DL_e[i])+' LD')
-
+            sys.stdout.write('%f '%Rp[i,j])
+            sys.stdout.flush()
+    print("\nRp_LD")
+    for j in range(len(RpLD)):
+        for i in range(len(eta)):
+            Rp[i,j] = RpLD[j]*DL_e[i]
+            sys.stdout.write('%2.2f '%(Rp[i,j]/DL_e[i]))
+            sys.stdout.flush()
+    print("")
 
 if __name__ == "__main__":
     main()

@@ -74,7 +74,7 @@ if args.OML or args.FR or args.FRE:
         print("Error:              {:.2f}% with FR Ext.".format(100*(last_value-comparison_value)/comparison_value, "%"))
         plt.axhline(comparison_value, linestyle='--', color='k', label='Comparison FR Ext.')
 
-plt.plot(df.time*1e6, df[args.column], '#ccc', zorder=-100, label='Raw')
+plt.plot(df.time*1e6, df[args.column], color="0.7", zorder=-100, label='Raw')
 plt.plot(df.time*1e6, av, label=r'Averaged ($\tau={:g}\,\mathrm{{\mu s}}$) (PTetra)'.format(args.r*1e6))
 if args.PUNC:
     plt.plot(df_punc.time*1e6, av_punc, label=r'Averaged ($\tau={:g}\,\mathrm{{\mu s}}$) (PUNC++)'.format(args.r*1e6))
