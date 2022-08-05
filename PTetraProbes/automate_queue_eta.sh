@@ -92,7 +92,7 @@ do
     cp ../$baseproject/run_saga.sh ./run.sh
     sed -i 's/.*#SBATCH --ntasks=.*/#SBATCH --ntasks='"$numproc"'/' run.sh
   fi
-  sed -i 's/.*#SBATCH --job-name=.*/#SBATCH --job-name='"Ptetjob$i"'/' run.sh
+  sed -i 's/.*#SBATCH --job-name=.*/#SBATCH --job-name='"Ptjob$i"'/' run.sh
   sed -i 's/.*#SBATCH --time=.*/#SBATCH --time='"$runtime:00:00"'/' run.sh
 
   echo "Preparation all done!!"
