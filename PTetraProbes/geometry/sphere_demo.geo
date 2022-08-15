@@ -3,7 +3,7 @@
 // STEP 1: SET VARIABLES
 
 debye = 0.005345413; // Electron debye length for n=1e11 and T=600K
-r = 1.8707628390921338*debye;   // Inner radius
+r = 1.87*debye;   // Inner radius
 R = r+10*debye;  // Outer radius
 Res = 1.5*debye; // Resolution on outer boundary
 res = r/5;       // Resolution on inner boundary

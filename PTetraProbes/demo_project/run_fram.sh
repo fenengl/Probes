@@ -6,7 +6,7 @@
 #SBATCH --nodes=1 --ntasks-per-node=4 --cpus-per-task=1 #FRAM
 # #SBATCH --mem-per-cpu=16000M  # For SAGA
 # #SBATCH --mem-per-cpu=3920M
-#SBATCH --mail-type=ALL
+#SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=sadhi@uio.no
 
 set -o errexit # Exit the script on any error
