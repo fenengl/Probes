@@ -5,13 +5,13 @@ echo "============================================"
 
 baseproject="demo_project"
 
-temp=(500.00 562.50 625.00 687.50 750.00 812.50 875.00 937.50 1000.00 500.00 562.50 625.00 687.50 750.00 812.50 875.00 937.50 1000.00 500.00 562.50 625.00 687.50 750.00 812.50 875.00 937.50 1000.00 500.00 562.50 625.00 687.50 750.00 812.50 875.00 937.50 1000.00 500.00 562.50 625.00 687.50 750.00 812.50 875.00 937.50 1000.00)  #temperature in K
-tempev=(0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862 0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862 0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862 0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862 0.0431 0.0485 0.0539 0.0592 0.0646 0.0700 0.0754 0.0808 0.0862)  #temperature in eV
+temp=(500.00 500.00 500.00 500.00 500.00)  #temperature in K
+tempev=(0.0431 0.0431 0.0431 0.0431 0.0431)  #temperature in eV
 
-debye=(0.004880 0.005176 0.005456 0.005722 0.005976 0.006220 0.006455 0.006682 0.006901 0.004880 0.005176 0.005456 0.005722 0.005976 0.006220 0.006455 0.006682 0.006901 0.004880 0.005176 0.005456 0.005722 0.005976 0.006220 0.006455 0.006682 0.006901 0.004880 0.005176 0.005456 0.005722 0.005976 0.006220 0.006455 0.006682 0.006901 0.004880 0.005176 0.005456 0.005722 0.005976 0.006220 0.006455 0.006682 0.006901)
-proberadius=(0.20 0.20 0.20 0.20 0.20 0.20 0.20 0.20 0.20 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.30 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.87 1.87 1.87 1.87 1.87 1.87 1.87 1.87 1.87)  #in terms of debye length
+debye=(0.004880 0.004880 0.004880 0.004880 0.004880)
+proberadius=(0.20 0.30 0.50 1.00 1.87)  #in terms of debye length
 # pvolt=(4.5 5.5 6.5)
-pvolt=(1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48 1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48 1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48 1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48 1.29 1.94 2.69 3.55 4.52 5.60 6.79 8.08 9.48)
+pvolt=(1.08 1.08 1.08 1.08 1.08)
 
 netotIni=50000000
 
@@ -19,7 +19,7 @@ netotIni=50000000
 numjobs=${#pvolt[@]}
 usrname="sadhi"
 numproc=4
-runtime=36
+runtime=48
 
 ndir="geometry"
 basegeofile="sphere_demo.geo"
@@ -43,10 +43,12 @@ then
   echo "Directory exists"
   for i in `seq 0 $(($numjobs-1))`
   do
-    geofile="sphere_"${proberadius[$i]}"R.geo"
-    if [ -f "$ndir"/"$geofile" ]
+    geofile="sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.geo"
+    meshfile="sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.msh"
+    topofile="sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.topo"
+    if [ -f "$ndir"/"$geofile" ] && [ -f "$ndir"/"$meshfile" ]  && [ -f "$ndir"/"$topofile" ]
     then
-      echo "Geofile exists"
+      echo "Geofile, meshfile, and topofile exists"
     else
       cp "$ndir"/"$basegeofile" "$ndir"/"$geofile"
       if [ -f "$ndir"/"$geofile" ]
@@ -60,12 +62,12 @@ then
       fi
     fi
     echo "Converting .msh to .topo"
-    meshfile="sphere_"${proberadius[$i]}"R.msh"
+    meshfile="sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.msh"
     cp "$ndir"/"msh2topo_bkp.dat" "$ndir"/"msh2topo.dat"
     sed -i 's/.*sphere_.*/'"$meshfile"'/' "$ndir"/"msh2topo.dat"
     cd $ndir
     ./msh2topo
-    mv msh2topo.out "sphere_"${proberadius[$i]}"R.topo"
+    mv msh2topo.out "sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.topo"
     cd ..
   done
 fi
@@ -78,7 +80,7 @@ do
   mkdir $projectdir
   cd $projectdir
   ln -s ../mptetra
-  ln -s ../geometry/"sphere_"${proberadius[$i]}"R.topo" meshpic.dat
+  ln -s ../geometry/"sphere_"${proberadius[$i]}"R_"${temp[$i]}"K.topo" meshpic.dat
   cp ../$baseproject/pictetra.dat .
   echo "Modifying pictetra.dat file"
   sed -i 's/.*te=.*/\tte='"${tempev[$i]}"'/' pictetra.dat
@@ -92,7 +94,7 @@ do
     cp ../$baseproject/run_saga.sh ./run.sh
     sed -i 's/.*#SBATCH --ntasks=.*/#SBATCH --ntasks='"$numproc"'/' run.sh
   fi
-  sed -i 's/.*#SBATCH --job-name=.*/#SBATCH --job-name='"Ptetjob$i"'/' run.sh
+  sed -i 's/.*#SBATCH --job-name=.*/#SBATCH --job-name='"PjobA$i"'/' run.sh
   sed -i 's/.*#SBATCH --time=.*/#SBATCH --time='"$runtime:00:00"'/' run.sh
 
   echo "Preparation all done!!"
