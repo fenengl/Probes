@@ -45,7 +45,7 @@ def beta_calc(l1,l2,r0,V1,V2,ns,Ts,V0s,Is):
         Beta_cyl1[i]=np.log(-I1/Cyl1)/np.log(1+calc_eta(V0+V1,T))
         Beta_cyl2[i]=np.log(-I2/Cyl2)/np.log(1+calc_eta(V0+V2[0],T))
         Beta_cyl3[i]=np.log(-I3/Cyl2)/np.log(1+calc_eta(V0+V2[1],T))
-        diff_Beta[i]=Beta_cyl1[i]-Beta_cyl3[i]
+        diff_Beta[i]=Beta_cyl1[i]-Beta_cyl2[i]
 
     data=np.array([Beta_cyl1,Beta_cyl2,Beta_cyl3,diff_Beta]).T
     #print(data)

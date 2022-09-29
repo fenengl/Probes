@@ -9,6 +9,8 @@ from frmt import print_table
 import scipy.constants as sc
 import tensorflow as tf
 import pandas as pd
+import sys
+sys.path.append("..")
 import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -16,10 +18,10 @@ from tensorflow.keras.layers.experimental import preprocessing
 from finite_length_extrapolated import *
 from finite_radius_extrapolated import *
 from data_gen import *
-from network_TF import *
+from network_TF_DNN import *
 from network_RBF import *
 #from tensorflow.keras.layers import Normalization
-
+version=5
 """
 Geometry, Probes and bias voltages
 """
@@ -44,14 +46,14 @@ geometry='mNLP'
 PART 1: GENERATE SYNTHETIC DATA USING LANGMUIR
 
 """
-gendata=1
-N = 10000 ## how many data points
+gendata=0
+N = 50000 ## how many data points
 
 ### adjust the data limits in the class
 if gendata == 1:
-    synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry)
+    synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry,version)
 elif gendata == 0:
-    synth_data=pd.read_csv('synth_data_mNLP.csv',index_col=0)
+    synth_data=pd.read_csv('synth_data_mNLP_5.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
@@ -65,12 +67,13 @@ PART 2: TRAIN AND TEST THE REGRESSION / TensorFlow NETWORK
 
 """
 ### select ratio of training and testing data
-M = int(0.8*N)
 
+M = int(0.7*N)
+K= int(0.8*N)
 TF=1
 
 if TF == 1:
-    pred,results,history,net_model= tensorflow_network(Is,Ts,M)
+    results,history,net_model= tensorflow_network(Is,Ts,M,K)
     ax = pd.DataFrame(data=history.history).plot(figsize=(15, 7))
     ax.grid()
     _ = ax.set(title="Training loss and accuracy", xlabel="Epochs")

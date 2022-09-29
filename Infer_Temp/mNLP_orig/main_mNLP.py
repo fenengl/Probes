@@ -26,7 +26,7 @@ Geometry, Probes and bias voltages
 
 l1=25e-3###25
 r0=0.255e-3
-rs=8e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
+rs=10e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
 
 geo1 = l.Sphere(r=rs)
 geo2 = l.Cylinder(r=r0, l=l1, lguard=float('inf'))
@@ -45,7 +45,7 @@ PART 1: GENERATE SYNTHETIC DATA USING LANGMUIR
 
 """
 gendata=1
-N = 40000 ## how many data points
+N = 15000 ## how many data points
 
 ### adjust the data limits in the class
 if gendata == 1:

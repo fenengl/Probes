@@ -19,7 +19,7 @@ def rand_log(N, range):
     x = rand_uniform(N, np.log(range))
     return np.exp(x)
 
-def random_synthetic_data(N,geo1,geo2,model1, model2,Vs_geo1,Vs_geo2,geometry):
+def random_synthetic_data(N,geo1,geo2,model1, model2,Vs_geo1,Vs_geo2,geometry,version):
 
     # def calc_eta(V,T):
     #     eta=(sc.elementary_charge*V)/(sc.Boltzmann*T)
@@ -46,9 +46,9 @@ def random_synthetic_data(N,geo1,geo2,model1, model2,Vs_geo1,Vs_geo2,geometry):
     synth_data=pd.DataFrame(data,columns=df_cols)
     #print(synth_data)
     if geometry=='cylinder':
-        synth_data.to_csv('synth_data_cyl.csv')
+        synth_data.to_csv('synth_data_cyl_%i.csv'%version)
     elif geometry=='mNLP':
-        synth_data.to_csv('synth_data_mNLP.csv')
+        synth_data.to_csv('synth_data_mNLP_%i.csv'%version)
     elif geometry=='sphere':
-        synth_data.to_csv('synth_data_sphere.csv')
+        synth_data.to_csv('synth_data_sphere_%i.csv'%version)
     return synth_data
