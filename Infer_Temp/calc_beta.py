@@ -9,23 +9,25 @@ from itertools import count
 from tqdm import tqdm
     ##  I= C*Ith(1+eta)^beta
 
+
+def calc_eta(V,T):
+    eta=(sc.elementary_charge*V)/(sc.Boltzmann*T)
+    return eta
+def calc_therm(T):
+    therm=np.sqrt(sc.Boltzmann*T/(2*sc.pi*sc.m_e))
+    return therm
+def calc_neq(n):
+    neq=n*sc.elementary_charge
+    return neq
+
+
 def beta_calc(l1,l2,r0,V1,V2,ns,Ts,V0s,Is):
 
     C_cyl1=2*sc.pi*r0*l1*2/np.sqrt(sc.pi)
     C_cyl2=2*sc.pi*r0*l2*2/np.sqrt(sc.pi)
     #C_sph=4*sc.pi*rs**2
     #C_sph2=4*sc.pi*rs2**2
-
-    def calc_eta(V,T):
-        eta=(sc.elementary_charge*V)/(sc.Boltzmann*T)
-        return eta
-    def calc_therm(T):
-        therm=np.sqrt(sc.Boltzmann*T/(2*sc.pi*sc.m_e))
-        return therm
-    def calc_neq(n):
-        neq=n*sc.elementary_charge
-        return neq
-                #eta = -q*V/(k*T)
+        #eta = -q*V/(k*T)
 
 
 #    print(Is)
@@ -50,6 +52,71 @@ def beta_calc(l1,l2,r0,V1,V2,ns,Ts,V0s,Is):
     data=np.array([Beta_cyl1,Beta_cyl2,Beta_cyl3,diff_Beta]).T
     #print(data)
     df_cols = ['Beta_cyl1', 'Beta_cyl2', 'Beta_cyl3', 'diff_Beta']
+    Beta=pd.DataFrame(data,columns=df_cols)
+
+    return(Beta)
+
+def beta_calc_sphere(rs,rs2,V1,V2,ns,Ts,V0s,Is):
+
+    #C_cyl1=2*sc.pi*r0*l1*2/np.sqrt(sc.pi)
+    #C_cyl2=2*sc.pi*r0*l2*2/np.sqrt(sc.pi)
+    C_sph=4*sc.pi*rs**2
+    C_sph2=4*sc.pi*rs2**2
+
+
+
+#    print(Is)
+    Is1 =np.array(Is[:,0])
+    Is2 =np.array(Is[:,1])
+    Is3 =np.array(Is[:,2])
+
+#    print(Is1)
+    Beta_sph1 = np.zeros(len(ns))
+    Beta_sph2 = np.zeros(len(ns))
+    Beta_sph3 = np.zeros(len(ns))
+    diff_Beta = np.zeros(len(ns))
+#    print(V2[0])
+    for i, n, T, V0, I1 , I2, I3 in zip(count(), ns, Ts, tqdm(V0s),Is1,Is2,Is3):
+        Sph1=calc_neq(n)*calc_therm(T)*C_sph
+        Sph2=calc_neq(n)*calc_therm(T)*C_sph2
+        Beta_sph1[i]=np.log(-I1/Sph1)/np.log(1+calc_eta(V0+V1,T))
+        Beta_sph2[i]=np.log(-I2/Sph2)/np.log(1+calc_eta(V0+V2[0],T))
+        Beta_sph3[i]=np.log(-I3/Sph2)/np.log(1+calc_eta(V0+V2[1],T))
+        diff_Beta[i]=Beta_sph1[i]-Beta_sph2[i]
+
+    data=np.array([Beta_sph1,Beta_sph2,Beta_sph3,diff_Beta]).T
+    #print(data)
+    df_cols = ['Beta_cyl1', 'Beta_cyl2', 'Beta_cyl3', 'diff_Beta']
+    Beta=pd.DataFrame(data,columns=df_cols)
+
+    return(Beta)
+
+def beta_calc_mNLP(l1,r0,rs,V1,V2,ns,Ts,V0s,Is):
+
+    C_cyl=2*sc.pi*r0*l1*2/np.sqrt(sc.pi)
+    #C_cyl2=2*sc.pi*r0*l2*2/np.sqrt(sc.pi)
+    C_sph=4*sc.pi*rs**2
+    #C_sph2=4*sc.pi*rs2**2
+
+#    print(Is)
+    Is1 =np.array(Is[:,0])
+    Is2 =np.array(Is[:,1])
+
+#    print(Is1)
+    Beta_sph = np.zeros(len(ns))
+    Beta_cyl = np.zeros(len(ns))
+    diff_Beta = np.zeros(len(ns))
+#    print(V2[0])
+    for i, n, T, V0, I1 , I2 in zip(count(), ns, Ts, tqdm(V0s),Is1,Is2):
+        Sph=calc_neq(n)*calc_therm(T)*C_sph
+        Cyl=calc_neq(n)*calc_therm(T)*C_cyl
+        Beta_sph[i]=np.log(-I1/Sph)/np.log(1+calc_eta(V0+V1,T))
+        Beta_cyl[i]=np.log(-I2/Cyl)/np.log(1+calc_eta(V0+V2[0],T))
+        diff_Beta[i]=Beta_sph[i]-Beta_cyl[i]
+
+    data=np.array([Beta_cyl,Beta_sph,diff_Beta]).T
+    #print(data)
+    df_cols = ['Beta_cyl', 'Beta_sph', 'diff_Beta']
     Beta=pd.DataFrame(data,columns=df_cols)
 
     return(Beta)
