@@ -15,18 +15,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import langmuir as l
 from scipy.optimize import curve_fit
+from itertools import count
 
 
 
-
-rs=10e-3
+rs=np.array([0.004880,0.004880,0.005176,0.005456,0.005722,0.005976,0.006220,0.006455,0.006682,0.006901])
 #T=600
+#print(rs)
+R=1
 T=600
 n=1e11
 V=3.5
 
 normalization=None
-geometry = l.Sphere(r=rs)
+
+
 species=l.Electron(n=n, T=T)
 keyword = ' sphere'
 
@@ -38,20 +41,19 @@ k = constants('Boltzmann constant')
 
 V = make_array(V)
 eta = -q*V/(k*T)
-print(eta)
-
 #Temp= -q*V/(k*20)
 #print(Temp)
 I = np.zeros_like(eta)
 
 indices_n = np.where(eta < 0)[0]   # indices for repelled particles
-indices_p = np.where(eta >= 0)[0]  # indices for attracted partp
-print(indices_p)
-print(indices_n)
-breakpoint()
-if normalization is None:
-    I0 = normalization_current(geometry, species)
+indices_p = np.where(eta >= 0)[0]  # indices for attracted particles
 
+I0 = np.zeros((len(rs)))
+if normalization is None:
+    for i in range(0,len(rs)):
+
+        I0[i] = normalization_current(l.Sphere(r=rs[i]), species)
+        print(I0[i])
 elif normalization.lower() == 'thmax':
     I0 = 1
 elif normalization.lower() == 'th':
@@ -63,18 +65,19 @@ elif normalization.lower() == 'oml':
 else:
     raise ValueError('Normalization not supported: {}'.format(normalization))
 
-R = geometry.r/species.debye
-print(geometry.r)
-print(R)
+#R = geometry.r/species.debye
+#print(geometry.r)
+#print(R)
 def powerlaw( x, a, b, c):
     return a*(b+x)**c
 def logarithmus( x, a, b):
     return a*np.log(b+x)
-axtest=np.array([0, 0.2, 0.3, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20,30,40, 50,60,70,80,90, 100])
+axtest=np.array([0, 0.2, 0.3, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20,30,40, 50,60,70,80,90, 100,110])
+axsim=np.array([25,30,40, 50,60,70,80,90, 100,110])
     # #alpha=0.2
     # print(alpha,tol,1/kappa)
-ax_PIC_eta=np.array([10,20,30,40,50,60,70,80,90,100])
-ax_PIC_I=np.array([-6.56e-06,-1.13e-05,-1.58e-05,-1.95e-05,-2.21e-05,-2.41e-05,-2.58e-05,-2.7e-05,-2.78e-05,-2.85e-05])/I0
+#ax_PIC_eta=np.array([10,20,30,40,50,60,70,80,90,100])
+#ax_PIC_I=np.array([-6.56e-06,-1.13e-05,-1.58e-05,-1.95e-05,-2.21e-05,-2.41e-05,-2.58e-05,-2.7e-05,-2.78e-05,-2.85e-05])/I0
 
 
 if (alpha <= tol) and (1/kappa <= tol):
@@ -83,21 +86,25 @@ if (alpha <= tol) and (1/kappa <= tol):
     vals = table['values']
     vals=np.array(vals)
     I_etas = interpn((ax[0],ax[1],), vals,(R,ax[1]), method='linear')
-    etas_ext=np.hstack((ax[1],ax_PIC_eta))
-    ind=np.argsort(etas_ext)
-    etas_ext=etas_ext[ind]
-    Is_ext=np.hstack((I_etas,ax_PIC_I))
-    Is_ext=Is_ext[ind]
-    ext=np.vstack((etas_ext,Is_ext))
-    print(ext)
-    print(ext[0,15:])
-    print(ext[1,:])
+    #etas_ext=np.hstack((ax[1],ax_PIC_eta))
+    #ind=np.argsort(etas_ext)
+    #etas_ext=etas_ext[ind]
+    #Is_ext=np.hstack((I_etas,ax_PIC_I))
+    #Is_ext=Is_ext[ind]
+    #ext=np.vstack((etas_ext,Is_ext))
+    #print(ext)
+    #print(ext[0,15:])
+    #print(ext[1,:])
 
     popt, pcov = curve_fit(powerlaw, ax[1], I_etas)#, bounds=(0, [1, 1, 0.83]))
     #popt, pcov = curve_fit(powerlaw, ext[0,15:], ext[1,15:])#, bounds=(0, [1, 1, 0.83]))
     # print(etas_ext[9:])
-    I[indices_p]=I0*powerlaw(eta[indices_p], *popt)        ########
-    I_OML = I0*l.OML_current(geometry, l.Electron(n=n,T=T), eta=axtest, normalization='th')
+    I[indices_p]=powerlaw(eta[indices_p], *popt)        ########
+    I_OML = np.zeros((len(rs)))
+    for i in range(0,len(rs)):
+        geometry=l.Sphere(r=rs[i])
+        I_OML[i] = l.OML_current(geometry, l.Electron(n=n,T=T), eta=axsim[i], normalization='th')
+    print(I_OML)
 
 
 
@@ -121,33 +128,31 @@ if (alpha <= tol) and (1/kappa <= tol):
     #plt.scatter(eta[indices_p],-1.288656E-05,marker='o',c='orange') ### for T=600 K Last plotted value PTetra: -2.55e-05
 #Last plotted value PUNC++: -2.53e-05
 
-    plt.scatter(eta[indices_p],-2.55E-05,marker='o',s=50,c='green',label='PTetra')### for T=1500 K
-    plt.scatter(eta[indices_p],-2.53e-05,marker='o',s=15,c='orange',label='PUNC++')
-    plt.scatter(10,-6.56e-06,marker='o',s=15,c='green')
-    plt.scatter(20,-1.13e-05,marker='o',s=15,c='green')
-    plt.scatter(30,-1.58e-05,marker='o',s=15,c='green')
-    plt.scatter(40,-1.95e-05,marker='o',s=15,c='green')
-    plt.scatter(50,-2.21e-05,marker='o',s=15,c='green')
-    plt.scatter(60,-2.41e-05,marker='o',s=15,c='green')
-    plt.scatter(70,-2.58e-05,marker='o',s=15,c='green')
-    plt.scatter(80,-2.7e-05,marker='o',s=15,c='green')
-    plt.scatter(90,-2.78e-05,marker='o',s=15,c='green')
-    plt.scatter(100,-2.85e-05,marker='o',s=15,c='green')
 
+    plt.scatter(25,-3.6e-06/I0[0],marker='o',s=15,c='green')
+    plt.scatter(30,-4.2e-06/I0[1],marker='o',s=15,c='green')
+    plt.scatter(40,-6.47e-06/I0[2],marker='o',s=15,c='green')
+    plt.scatter(50,-9.3e-06/I0[3],marker='o',s=15,c='green')
+    plt.scatter(60,-1.25e-05/I0[4],marker='o',s=15,c='green')
+    plt.scatter(70,-1.65e-05/I0[5],marker='o',s=15,c='green')
+    plt.scatter(80,-2.05e-05/I0[6],marker='o',s=15,c='green')
+    plt.scatter(90,-2.51e-05/I0[7],marker='o',s=15,c='green')
+    plt.scatter(100,-2.98e-05/I0[8],marker='o',s=15,c='green')
+    plt.scatter(110,-3.5e-05/I0[9],marker='o',s=15,c='green')
 
-    plt.scatter(ax[1],I0*I_etas,marker='.',c='k',label='etas from laframboise')
+    plt.scatter(ax[1],I_etas,marker='.',c='k',label='etas from laframboise')
     #plt.scatter(67.7,-1.288656E-05/I0,marker='o',c='orange',label='PTetra')
 
         #plt.plot(ax[1],powerlaw(ax[1], *popt),linewidth=0.5,c='b')
-    plt.plot(axtest,I0*powerlaw(axtest, *popt),linewidth=0.5,c='b',label='a*(b+x)**c')
-    plt.plot(axtest,I_OML,linewidth=0.5,c='g',label='OML')
+    plt.plot(axtest,powerlaw(axtest, *popt),linewidth=0.5,c='b',label='a*(b+x)**c')
+    plt.plot(axsim,I_OML,linewidth=0.5,c='g',label='OML')
     plt.scatter(eta[indices_p],I[indices_p],marker='.',c='r',label='eta =%.1f' %eta[indices_p])
     leg = plt.legend()
 
     plt.tight_layout()
     plt.show()
-    breakpoint()
+    #breakpoint()
 
 
 
-    I[indices_n] = I0*OML_current(geometry, species, eta=eta[indices_n], normalization='thmax')
+    #I[indices_n] = OML_current(geometry, species, eta=eta[indices_n], normalization='thmax')
