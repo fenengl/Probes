@@ -19,12 +19,12 @@ import sys
 sys.path.append("..")
 from finite_length_extrapolated import *
 from data_gen import *
-from network_TF_DNN0 import *
+from network_TF_ne import *
 from network_RBF import *
 from calc_beta import beta_calc_mNLP
 from scipy.stats.stats import pearsonr
 #from tensorflow.keras.layers import Normalization
-version=2
+version=9
 """
 Geometry, Probes and bias voltages
 """
@@ -56,7 +56,7 @@ N = 13000 ## how many data points
 if gendata == True:
     synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry,version)
 elif gendata == False:
-    synth_data=pd.read_csv('synth_data_mNLP_%i.csv'%version,index_col=0)
+    synth_data=pd.read_csv('synth_data_mNLP_2.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
@@ -73,7 +73,7 @@ PART 2: TRAIN AND TEST THE REGRESSION / TensorFlow NETWORK
 
 M = int(0.7*N)
 K= int(0.8*N)
-TF=False
+TF=True
 
 if TF == True:
     results,history,net_model= tensorflow_network(Is,Ts,M,K)

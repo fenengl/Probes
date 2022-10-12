@@ -19,12 +19,12 @@ import sys
 sys.path.append("..")
 from finite_length_extrapolated import *
 from data_gen import *
-from network_TF_DNN0 import *
+from network_TF_ne import *
 from network_RBF import *
 from calc_beta import beta_calc_mNLP
 from scipy.stats.stats import pearsonr
 #from tensorflow.keras.layers import Normalization
-version=2
+version=8
 """
 Geometry, Probes and bias voltages
 """
@@ -56,7 +56,7 @@ N = 13000 ## how many data points
 if gendata == True:
     synth_data=random_synthetic_data(N,geo1,geo2,model1,model2,Vs_geo1,Vs_geo2,geometry,version)
 elif gendata == False:
-    synth_data=pd.read_csv('synth_data_mNLP_%i.csv'%version,index_col=0)
+    synth_data=pd.read_csv('synth_data_mNLP_2.csv',index_col=0)
 else:
     logger.error('Specify whether to create new data or use the existing set')
 
@@ -76,7 +76,7 @@ K= int(0.8*N)
 TF=False
 
 if TF == True:
-    results,history,net_model= tensorflow_network(Is,Ts,M,K)
+    results,history,net_model= tensorflow_network(Is,ns,M,K)
     net_model.save('tf_model_%i'%version)
     pred=net_model.predict(Is[K:])
 
@@ -121,7 +121,7 @@ predictions = net_model.predict(I)
 I_geo1_test = np.zeros((len( data['ne']),len(Vs_geo1)))
 I_geo2_test = np.zeros((len( data['ne']),len(Vs_geo2)))
  #####3 here is the problem:
-for i, n, T, V0 in zip(count(), data['ne'], predictions, tqdm(data['V0'])):
+for i, T, n , V0 in zip(count(), data['Te'], predictions, tqdm(data['V0'])):
     I_geo1_test[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
     I_geo2_test[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 I_test=np.append(I_geo1_test,I_geo2_test,axis=1)
@@ -144,20 +144,19 @@ plt.rcParams.update({'lines.linewidth': 3})
 
 
 fig, ax = plt.subplots(figsize=(10, 10))
-plot = ax.loglog
-plot(Ts[K:], pred, '+', ms=7)
-xmin = min([min(Ts[K:]), min(pred)])
-xmax = max([max(Ts[K:]), max(pred)])
+plot = ax.plot
+plot(ns[K:], pred, '+', ms=7)
+xmin = min([min(ns[K:]), min(pred)])
+xmax = max([max(ns[K:]), max(pred)])
 plot([xmin, xmax], [xmin, xmax], '--k')
 ax.set_aspect('equal', 'box')
-ax.set_xlabel('synthetic $T_e$ [K]')
-ax.set_ylabel('predicted $T_e$ [K]')
-ax.set_xticks([250,1000,3250])
-ax.set_yticks([250,1000,3250])
-rmsre=rms_rel_error(Ts[K:].ravel(),pred.ravel())
-corrcoeff=pearsonr(Ts[K:].ravel(),pred.ravel())[0]
-
-plt.text(300,2000,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2} %\ncorr = {3}' .format(l1*100,rs*100,round(rmsre*100,1),round(corrcoeff,2)))
+ax.set_xlabel('synthetic $n_e [m^{-3}]$')
+ax.set_ylabel('predicted $n_e [m^{-3}]$')
+#ax.set_xticks([250,1000,3250])
+#ax.set_yticks([250,1000,3250])
+rmsre=rms_rel_error(ns[K:].ravel(),pred.ravel())
+corrcoeff=pearsonr(ns[K:].ravel(),pred.ravel())[0]
+plt.text(0.4e11,2.7e11,'$l_n$={0} cm, $r_s$={1} cm\ncorr = {3}' .format(l1*100,rs*100,round(rmsre*100,1),round(corrcoeff,2)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('a)')
@@ -201,16 +200,16 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 10))
 plot = ax.plot
-plot(data['Te'], data['alt'], label='Ground truth')
+plot(data['ne'], data['alt'], label='Ground truth')
 plot(predictions, data['alt'], label='Predicted')
 #ax.set_aspect('equal', 'box')
-ax.set_xlabel('Temperature $[\mathrm{K}]$')
+ax.set_xlabel('ne $[\mathrm{K}]$')
 ax.set_ylabel('Altitude $[\mathrm{km}]$')
 ax.set_xlim(0,2800)
 ax.set_ylim(75,525)
 
 
-plt.text(40,420,'RMSRE ({0} - {1} km) = {2}%' .format(range1,range2,round(rms_rel_error(data['Te'].ravel()[range1:range2], predictions.ravel()[range1:range2])*100,1)))
+plt.text(40,420,'RMSRE (%i - %i km) = ' %(range1,range2) + str(round(rms_rel_error(data['ne'].ravel()[range1:range2], predictions.ravel()[range1:range2]),3)))
 
 
 plt.axhline(y=range2, color='red', linestyle='dotted', linewidth=3)
@@ -233,9 +232,9 @@ print_table(
      [np.std(beta.Beta_sph),np.std(beta.Beta_cyl)]])
 print_table(
     [['RMSE'             ,'RMSRE'             , 'corr'             ,'MAE'             ,'MRE'             ,'ER_STD'             ],
-    [rms_error(Ts[K:].ravel(),pred.ravel()),rms_rel_error(Ts[K:].ravel(),pred.ravel()),pearsonr(Ts[K:].ravel(),pred.ravel())[0],max_abs_error(Ts[K:] ,pred.ravel()),max_rel_error(Ts[K:] ,pred.ravel()),error_std(Ts[K:].ravel(), pred.ravel())]])
+    [rms_error(Ts[K:].ravel(),pred.ravel()),rms_rel_error(ns[K:].ravel(),pred.ravel()),pearsonr(ns[K:].ravel(),pred.ravel())[0],max_abs_error(Ts[K:] ,pred.ravel()),max_rel_error(ns[K:] ,pred.ravel()),error_std(Ts[K:].ravel(), pred.ravel())]])
 
 print_table(
     [['sigma'              ,'RMSRE'
      , 'corr'                  ],
-     [sel_noise, rms_rel_error(data['Te'].ravel(), predictions.ravel()),pearsonr(data['Te'].ravel(),predictions.ravel())[0]]])
+     [sel_noise, rms_rel_error(data['ne'].ravel(), predictions.ravel()),pearsonr(data['ne'].ravel(),predictions.ravel())[0]]])

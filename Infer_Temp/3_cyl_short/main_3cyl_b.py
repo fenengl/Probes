@@ -235,6 +235,35 @@ print_table(
     [['sigma'              ,'RMSRE'              , 'corr'                  ],
      [sel_noise, rms_rel_error(data['Te'].ravel(), predictions.ravel()),pearsonr(data['Te'].ravel(),predictions.ravel())[0]]])
 
+
+def calc_eta(V,T):
+    eta=(sc.elementary_charge*V)/(sc.Boltzmann*T)
+    return eta
+#
+
+
+plt.figure(figsize=(10, 10))
+
+plt.plot(calc_eta(Vs_geo2[0],data['Te']), data['alt'],c='orange',label='$V_b = 2.5V$')
+plt.plot(calc_eta(Vs_geo1[0],data['Te']), data['alt'],c='r',label='$V_b = 4V$')
+plt.plot(calc_eta(Vs_geo2[1],data['Te']), data['alt'],c='b',label='$V_b = 7.5V$')
+plt.axhline(y=150, color='k', linestyle='dashed', linewidth=3)
+plt.axvline(x=110, color='k', linestyle='dashed', linewidth=3)
+xticks=np.array([25,50,75,100,125])
+yticks=np.array([150,200,250,300,350,400,450])
+plt.xlim(5,130)
+plt.ylim(100,500)
+plt.xticks(xticks)
+plt.yticks(yticks)
+
+plt.title('b)')
+plt.xlabel('$\eta$')
+plt.ylabel('Altitude $[\mathrm{km}]$')
+plt.legend()
+#
+plt.savefig('eta_%i.png'%version, bbox_inches="tight")
+plt.show()
+
 # debye = np.zeros(len(data['Te']))
 # def calc_eta(V,T):
 #     eta=(sc.elementary_charge*V)/(sc.Boltzmann*T)

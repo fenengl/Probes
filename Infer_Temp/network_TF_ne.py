@@ -16,11 +16,9 @@ def tensorflow_network(Is,Ts,M,K):
     #layers. Dense-- regular NN layer densely connected
     tf_model = keras.Sequential([
     normal,
-    layers.Dense(100, activation='relu'),
+
     layers.Dense(40, activation='selu'),
     layers.Dense(40, activation='gelu'),
-    layers.Dense(40, activation='selu'),
-    layers.Dense(40, activation='relu'),
     layers.Dense(40, activation='selu'),
     layers.Dense(40, activation='gelu'),
     layers.Dense(40, activation='selu'),
