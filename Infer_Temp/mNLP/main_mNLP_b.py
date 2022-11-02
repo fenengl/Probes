@@ -90,7 +90,8 @@ elif TF == False:
 
     net_model = keras.models.load_model('tf_model_%i'%version)
     pred=net_model.predict(Is[K:])
-
+    with open('rereport.txt','w') as fh:
+        net_model.summary(print_fn=lambda x: fh.write(x + '\n'))
     #pred,net_model= rbf_network(Is,Ts,M)
 
 else:
@@ -157,7 +158,7 @@ ax.set_yticks([250,1000,3250])
 rmsre=rms_rel_error(Ts[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(Ts[K:].ravel(),pred.ravel())[0]
 
-plt.text(300,2000,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2} %\ncorr = {3}' .format(l1*100,rs*100,round(rmsre*100,1),round(corrcoeff,2)))
+plt.text(300,2000,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2}%' .format(l1*100,rs*100,round(rmsre*100,1)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('a)')
@@ -201,7 +202,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 10))
 plot = ax.plot
-plot(data['Te'], data['alt'], label='Ground truth')
+plot(data['Te'], data['alt'], label='Ground truth IRI')
 plot(predictions, data['alt'], label='Predicted')
 #ax.set_aspect('equal', 'box')
 ax.set_xlabel('Temperature $[\mathrm{K}]$')

@@ -155,7 +155,7 @@ ax.set_yticks([250,1000,3250])
 rmsre=rms_rel_error(Ts[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(Ts[K:].ravel(),pred.ravel())[0]
 
-plt.text(300,2000,'$l_1$={0} cm, $l_2$=$l_3$={1} cm\nRMSRE = {2} %\ncorr = {3}' .format(l1*100,round(l2*100),round(rmsre*100,1),round(corrcoeff,2)))
+plt.text(300,2000,'$l_1$={0} cm, $l_2$=$l_3$={1} cm\nRMSRE = {2} %\ncorr = {3}%' .format(l1*100,round(l2*100),round(rmsre*100,1),round(corrcoeff,2)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('c)')
@@ -196,7 +196,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 10))
 plot = ax.plot
-plot(data['Te'], data['alt'], label='Ground truth')
+plot(data['Te'], data['alt'], label='Ground truth IRI')
 plot(predictions, data['alt'], label='Predicted')
 #ax.set_aspect('equal', 'box')
 ax.set_xlabel('Temperature $[\mathrm{K}]$')
@@ -244,9 +244,9 @@ def calc_eta(V,T):
 
 plt.figure(figsize=(10, 10))
 
-plt.plot(calc_eta(Vs_geo2[0],data['Te']), data['alt'],c='orange',label='$V_b = 2.5V$')
-plt.plot(calc_eta(Vs_geo1[0],data['Te']), data['alt'],c='r',label='$V_b = 4V$')
-plt.plot(calc_eta(Vs_geo2[1],data['Te']), data['alt'],c='b',label='$V_b = 7.5V$')
+plt.plot(calc_eta(Vs_geo2[0]+data['V0'],data['Te']), data['alt'],c='orange',label='$V_b = 2.5V$')
+plt.plot(calc_eta(Vs_geo1[0]+data['V0'],data['Te']), data['alt'],c='r',label='$V_b = 4V$')
+plt.plot(calc_eta(Vs_geo2[1]+data['V0'],data['Te']), data['alt'],c='b',label='$V_b = 7.5V$')
 plt.axhline(y=150, color='k', linestyle='dashed', linewidth=3)
 plt.axvline(x=110, color='k', linestyle='dashed', linewidth=3)
 xticks=np.array([25,50,75,100,125])

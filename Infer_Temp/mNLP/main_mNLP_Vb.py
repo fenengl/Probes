@@ -118,13 +118,7 @@ I=np.append(I_geo1,I_geo2,axis=1)
 
 
 predictions = net_model.predict(I)
-I_geo1_test = np.zeros((len( data['ne']),len(Vs_geo1)))
-I_geo2_test = np.zeros((len( data['ne']),len(Vs_geo2)))
- #####3 here is the problem:
-for i, T, n , V0 in zip(count(), data['Te'], data['ne'], predictions):
-    I_geo1_test[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
-    I_geo2_test[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
-I_test=np.append(I_geo1_test,I_geo2_test,axis=1)
+
 
 """
 PART 4: ANALYSIS
@@ -154,87 +148,19 @@ ax.set_xlabel('synthetic $V_f [V]$')
 ax.set_ylabel('predicted $V_f [V]$')
 #ax.set_xticks([250,1000,3250])
 #ax.set_yticks([250,1000,3250])
-rmsre=rms_rel_error(V0s[K:].ravel(),pred.ravel())
+rmsre=rms_error(V0s[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(V0s[K:].ravel(),pred.ravel())[0]
-plt.text(-2,-0.25,'$l_n$={0} cm, $r_s$={1} cm\ncorr = {3}' .format(l1*100,rs*100,round(rmsre*100,1),round(corrcoeff,2)))
+
+plt.text(-2,-0.25,'$l_n$={0} cm, $r_s$={1} cm\nRMSE = {2}' .format(l1*100,rs*100,round(rmsre,2)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('b)')
 plt.savefig('correlation_%i.png'%version, bbox_inches="tight")
 
-
-
-Ix1=I[:,0]*1e6
-Iy1=I_test[:,0]*1e6
-Ix2=I[:,1]*1e6
-Iy2=I_test[:,1]*1e6
-Ix3=I[:,2]*1e6
-Iy3=I_test[:,2]*1e6
-Ix4=I[:,3]*1e6
-Iy4=I_test[:,3]*1e6
-Ix5=I[:,4]*1e6
-Iy5=I_test[:,4]*1e6
-fig, ax = plt.subplots(figsize=(10, 10))
-plot = ax.plot
-plot(Ix1, Iy1, 'c+', ms=14)
-plot(Ix2, Iy2, 'c+', ms=14)
-plot(Ix3, Iy3, 'c+', ms=14)
-plot(Ix4, Iy4, 'c+', ms=14)
-plot(Ix5, Iy5, 'c+', ms=14)
-xmin = min([min(Ix1), min(Iy1),min(Ix2), min(Iy2),min(Ix3), min(Iy3),min(Ix4), min(Iy4),min(Ix5), min(Iy5)])
-xmax = max([max(Ix1), max(Iy1),max(Ix2), max(Iy2),max(Ix3), max(Iy3),max(Ix4), max(Iy4),max(Ix5), max(Iy5)])
-plot([xmin, xmax], [xmin, xmax], '--k')
-ax.set_aspect('equal', 'box')
-ax.set_xlabel('$I_s$ [μA]')
-ax.set_ylabel('$I_i$ [μA]')
-plt.text(-8,-.5,'$l_n$={0} cm, $r_s$={1} cm' .format(l1*100,rs*100))
-#ax.set_xticks([250,1000,3250])
-#ax.set_yticks([250,1000,3250])
-ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
-ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
-plt.title('b)')
-plt.savefig('I_test_%i.png'%version, bbox_inches="tight")
-plt.show()
-
-
-
-fig, ax = plt.subplots(figsize=(10, 10))
-plot = ax.plot
-plot(data['V0s'], data['alt'], label='Ground truth')
-plot(predictions, data['alt'], label='Predicted')
-#ax.set_aspect('equal', 'box')
-ax.set_xlabel('ne $[\mathrm{K}]$')
-ax.set_ylabel('Altitude $[\mathrm{km}]$')
-ax.set_xlim(0,2800)
-ax.set_ylim(75,525)
-
-
-plt.text(40,420,'RMSRE (%i - %i km) = ' %(range1,range2) + str(round(rms_rel_error(data['ne'].ravel()[range1:range2], predictions.ravel()[range1:range2]),3)))
-
-
-plt.axhline(y=range2, color='red', linestyle='dotted', linewidth=3)
-plt.axhline(y=range1, color='red', linestyle='dotted', linewidth=3)
-ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
-ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
-plt.title('b)')
-plt.legend()
-plt.savefig('predict_%i.png'%version, bbox_inches="tight")
-
-
-
-
-print_table(
-    [['rs'              , 'B1'              , 'V1'              ,'l1'              ,'B2'               , 'V2'              ,'dB'                  ],
-     [rs,np.mean(beta.Beta_sph),Vs_geo1[0],l1,np.mean(beta.Beta_cyl),Vs_geo2[0],np.mean(beta.diff_Beta)]])
-
-print_table(
-    [['B1_std'          ,'B2_std'           ],
-     [np.std(beta.Beta_sph),np.std(beta.Beta_cyl)]])
-print_table(
-    [['RMSE'             ,'RMSRE'             , 'corr'             ,'MAE'             ,'MRE'             ,'ER_STD'             ],
-    [rms_error(Ts[K:].ravel(),pred.ravel()),rms_rel_error(ns[K:].ravel(),pred.ravel()),pearsonr(ns[K:].ravel(),pred.ravel())[0],max_abs_error(Ts[K:] ,pred.ravel()),max_rel_error(ns[K:] ,pred.ravel()),error_std(Ts[K:].ravel(), pred.ravel())]])
-
-print_table(
-    [['sigma'              ,'RMSRE'
-     , 'corr'                  ],
-     [sel_noise, rms_rel_error(data['ne'].ravel(), predictions.ravel()),pearsonr(data['ne'].ravel(),predictions.ravel())[0]]])
+a=-pred.ravel()
+b=-V0s[K:].ravel()
+e = (a-b)/b
+print(np.sum(np.abs(e)**2)/len(e))
+print(np.max(a-b)**2)
+print(np.sqrt(np.sum(np.abs(e)**2)/len(e)))
+print(rmsre)

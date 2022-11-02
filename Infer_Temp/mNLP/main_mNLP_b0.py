@@ -90,7 +90,8 @@ elif TF == False:
 
     net_model = keras.models.load_model('tf_model_%i'%version)
     pred=net_model.predict(Is[K:])
-
+    with open('rereport.txt','w') as fh:
+        net_model.summary(print_fn=lambda x: fh.write(x + '\n'))
     #pred,net_model= rbf_network(Is,Ts,M)
 
 else:

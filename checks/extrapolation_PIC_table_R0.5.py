@@ -76,7 +76,7 @@ plt.rcParams.update({'lines.linewidth': 3})
 
 fig, ax1 = plt.subplots(figsize=(10, 10))
 plt.xlabel('$\eta$ ')
-plt.ylabel('I [A]')
+plt.ylabel('$I/I_{th}$')
 
 
 y_est = powerlaw(axtest, *popt)

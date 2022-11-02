@@ -30,7 +30,7 @@ Geometry, Probes and bias voltages
 """
 version=2
 rs2=30e-3###25
-rs=5e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
+rs=30e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
 
 geo1 = l.Sphere(r=rs)
 geo2 = l.Sphere(r=rs2)

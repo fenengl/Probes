@@ -156,7 +156,8 @@ ax.set_ylabel('predicted $n_e [m^{-3}]$')
 #ax.set_yticks([250,1000,3250])
 rmsre=rms_rel_error(ns[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(ns[K:].ravel(),pred.ravel())[0]
-plt.text(0.4e11,2.7e11,'$l_n$={0} cm, $r_s$={1} cm\ncorr = {3}' .format(l1*100,rs*100,round(rmsre*100,1),round(corrcoeff,2)))
+
+plt.text(0.4e11,2.7e11,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2}%' .format(l1*100,rs*100,round(rmsre*100,1)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('a)')
@@ -222,6 +223,10 @@ plt.savefig('predict_%i.png'%version, bbox_inches="tight")
 
 
 
+print(ns[K:].ravel())
+print(pred.ravel())
+print(rmsre)
+
 
 print_table(
     [['rs'              , 'B1'              , 'V1'              ,'l1'              ,'B2'               , 'V2'              ,'dB'                  ],
@@ -232,7 +237,7 @@ print_table(
      [np.std(beta.Beta_sph),np.std(beta.Beta_cyl)]])
 print_table(
     [['RMSE'             ,'RMSRE'             , 'corr'             ,'MAE'             ,'MRE'             ,'ER_STD'             ],
-    [rms_error(Ts[K:].ravel(),pred.ravel()),rms_rel_error(ns[K:].ravel(),pred.ravel()),pearsonr(ns[K:].ravel(),pred.ravel())[0],max_abs_error(Ts[K:] ,pred.ravel()),max_rel_error(ns[K:] ,pred.ravel()),error_std(Ts[K:].ravel(), pred.ravel())]])
+    [rms_error(ns[K:].ravel(),pred.ravel()),rms_rel_error(ns[K:].ravel(),pred.ravel()),pearsonr(ns[K:].ravel(),pred.ravel())[0],max_abs_error(Ts[K:] ,pred.ravel()),max_rel_error(ns[K:] ,pred.ravel()),error_std(Ts[K:].ravel(), pred.ravel())]])
 
 print_table(
     [['sigma'              ,'RMSRE'

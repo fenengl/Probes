@@ -153,7 +153,7 @@ rmsre=rms_rel_error(Ts[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(Ts[K:].ravel(),pred.ravel())[0]
 
 
-plt.text(300,2000,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2} %\ncorr = {3}' .format(l1*100,round(rs*100),round(rmsre*100,1),round(corrcoeff,2)))
+plt.text(300,2000,'$l_n$={0} cm, $r_s$={1} cm\nRMSRE = {2}%' .format(l1*100,round(rs*100),round(rmsre*100,1)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('b)')
@@ -162,7 +162,7 @@ plt.savefig('correlation_%i.png'%version, bbox_inches="tight")
 
 fig, ax = plt.subplots(figsize=(10, 10))
 plot = ax.plot
-plot(data['Te'], data['alt'], label='Ground truth')
+plot(data['Te'], data['alt'], label='Ground truth IRI')
 plot(predictions, data['alt'], label='Predicted')
 #ax.set_aspect('equal', 'box')
 ax.set_xlabel('Temperature $[\mathrm{K}]$')
