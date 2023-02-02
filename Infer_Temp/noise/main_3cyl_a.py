@@ -23,10 +23,6 @@ from network_TF_DNN import *
 from network_RBF import *
 from calc_beta import beta_calc
 from scipy.stats.stats import pearsonr
-#from keras.models import load_model
-#from tensorflow.keras.layers import Normalization
-
-
 
 
 
@@ -98,8 +94,7 @@ elif TF == False:
 
     #pred,net_model= rbf_network(Is,Ts,M)
 else:
-    logger.error('Specify whether to use tensorflow or RBF')
-
+    logger.error('Specify whether to make a new tensorflow model')
 
 
 """
@@ -111,16 +106,9 @@ Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 
 sel_noise=1e-7
 
-
 data_geo1 = l.generate_synthetic_data(geo1, Vs_geo1, model=model1,noise=sel_noise)
 data_geo2 = l.generate_synthetic_data(geo2, Vs_geo2, model=model2,noise=sel_noise)
 
-#I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
-#I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
-
-#for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
-#    I_geo1[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
-#    I_geo2[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 I=np.append(data_geo1['I'],data_geo2['I'],axis=1)
 
 print(data_geo1['Te'])
@@ -129,23 +117,19 @@ print(data_geo2['Te'])
 predictions = net_model.predict(I)
 
 
-
 """
 PART 4: ANALYSIS
 """
 range1=120
 range2=450
 beta=beta_calc(l1,l2,r0,Vs_geo1,Vs_geo2,ns,Ts,V0s,Is)
-#print(beta)
+
 plt.rcParams.update({'font.size': 24})
 plt.rcParams.update({'xtick.major.size': 20})
 plt.rcParams.update({'ytick.major.size': 20})
 plt.rcParams.update({'xtick.minor.size': 15})
 plt.rcParams.update({'ytick.minor.size': 15})
 plt.rcParams.update({'lines.linewidth': 3})
-
-
-
 
 fig, ax = plt.subplots(figsize=(10, 10))
 plot = ax.plot
@@ -157,10 +141,7 @@ ax.set_ylabel('Altitude $[\mathrm{km}]$')
 ax.set_xlim(0,2800)
 ax.set_ylim(75,525)
 
-
-
 plt.text(40,420,'RMSRE ({0} - {1} km) = {2}%' .format(range1,range2,round(rms_rel_error(data_geo1['Te'].ravel()[range1:range2], predictions.ravel()[range1:range2])*100,1)))
-
 
 plt.axhline(y=range2, color='red', linestyle='dotted', linewidth=3)
 plt.axhline(y=range1, color='red', linestyle='dotted', linewidth=3)

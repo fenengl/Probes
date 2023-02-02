@@ -26,7 +26,7 @@ def tensorflow_network(Is,Ts,M,K):
     ])
     ## relu, swish,elu,selu,gelu
     callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
-    tf_model.compile(loss='mean_absolute_error',optimizer=tf.keras.optimizers.Adam(0.001),metrics=['MeanAbsolutePercentageError']) #remove acc ## works also with logarithmic, when increasing learning rate, finishes in less steps but less accurate
+    tf_model.compile(loss='mean_absolute_error',optimizer=tf.keras.optimizers.Adam(0.001),metrics=['MeanAbsolutePercentageError'])
 
     with open('report.txt','w') as fh:
         tf_model.summary(print_fn=lambda x: fh.write(x + '\n'))

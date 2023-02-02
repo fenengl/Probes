@@ -105,19 +105,11 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA (IRI)
 Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 
 
-
 sel_noise=2*1e-5
-
 
 data_geo1 = l.generate_synthetic_data(geo1, Vs_geo1, model=model1,noise=sel_noise)
 data_geo2 = l.generate_synthetic_data(geo2, Vs_geo2, model=model2,noise=sel_noise)
 
-#I_geo1 = np.zeros((len( data['ne']),len(Vs_geo1)))
-#I_geo2 = np.zeros((len( data['ne']),len(Vs_geo2)))
-
-#for i, n, T, V0 in zip(count(), data['ne'], data['Te'], tqdm(data['V0'])):
-#    I_geo1[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
-#    I_geo2[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
 I=np.append(data_geo1['I'],data_geo2['I'],axis=1)
 
 print(data_geo1['Te'])
@@ -156,8 +148,6 @@ ax.set_ylim(75,525)
 
 plt.text(40,420,'RMSRE ({0} - {1} km) = {2}%' .format(range1,range2,round(rms_rel_error(data_geo1['Te'].ravel()[range1:range2], predictions.ravel()[range1:range2])*100,1)))
 
-#plt.xlim(0,2800)
-#plt.ylim(50,550)
 plt.axhline(y=range2, color='red', linestyle='dotted', linewidth=3)
 plt.axhline(y=range1, color='red', linestyle='dotted', linewidth=3)
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
@@ -168,13 +158,6 @@ plt.savefig('predict_sph.png', bbox_inches="tight")
 
 
 
-#print(l1)
-#print(np.mean(beta.Beta_cyl1))
-#print(np.mean(beta.diff_Beta))
-#print(sel_noise)
-#print(rms_rel_error(data['Te'][0:range], pred[0:range]))
-
-#print(pearsonr(data['Te'].ravel(),pred.ravel())[0])
 print_table(
     [['rs1'              , 'B1'              , 'V1'              ,'rs2'              ,'B2'              , 'V2'              ,'rs3'              ,'B3'               , 'V3'              ,'dB'             ],
      [rs,np.mean(beta.Beta_cyl1),Vs_geo1[0],rs2,np.mean(beta.Beta_cyl2),Vs_geo2[0],rs2,np.mean(beta.Beta_cyl3),Vs_geo2[1],np.mean(beta.diff_Beta)]])
