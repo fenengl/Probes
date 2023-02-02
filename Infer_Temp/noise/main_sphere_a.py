@@ -178,7 +178,9 @@ plt.savefig('predict_sph.png', bbox_inches="tight")
 print_table(
     [['rs1'              , 'B1'              , 'V1'              ,'rs2'              ,'B2'              , 'V2'              ,'rs3'              ,'B3'               , 'V3'              ,'dB'             ],
      [rs,np.mean(beta.Beta_cyl1),Vs_geo1[0],rs2,np.mean(beta.Beta_cyl2),Vs_geo2[0],rs2,np.mean(beta.Beta_cyl3),Vs_geo2[1],np.mean(beta.diff_Beta)]])
-
+print_table(
+        [['I1mean'              , 'I2mean'              , 'I3mean'              ],
+        [np.mean(Is[:,0]),np.mean(Is[:,1]),np.mean(Is[:,2])]])
 print_table(
     [['sigma'              ,'RMSRE'             , 'corr'                  ],
      [sel_noise, rms_rel_error(data_geo1['Te'].ravel(), predictions.ravel()),pearsonr(data_geo1['Te'].ravel(),predictions.ravel())[0]]])

@@ -23,6 +23,7 @@ def tensorflow_network(Is,Ts,M,K):
     layers.Dense(40, activation='gelu'),
     layers.Dense(40, activation='selu'),
     layers.Dense(40, activation='relu'),
+    layers.Dense(40, activation='relu'),
     layers.Dense(1)
 
     ])

@@ -174,7 +174,9 @@ plt.savefig('predict_1.png', bbox_inches="tight")
 print_table(
         [['l1'              , 'B1'              , 'V1'              ,'l2'              ,'B2'              , 'V2'              ,'l3'              ,'B3'               , 'V3'              ,'dB'              ],
         [l1,np.mean(beta.Beta_cyl1),Vs_geo1[0],l2,np.mean(beta.Beta_cyl2),Vs_geo2[0],l2,np.mean(beta.Beta_cyl3),Vs_geo2[1],np.mean(beta.diff_Beta)]])
-
+print_table(
+        [['I1mean'              , 'I2mean'              , 'I3mean'              ],
+        [np.mean(Is[:,0]),np.mean(Is[:,1]),np.mean(Is[:,2])]])
 
 print_table(
         [['sigma'              ,'RMSRE'              , 'corr'                  ],

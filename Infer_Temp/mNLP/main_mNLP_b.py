@@ -190,6 +190,7 @@ ax.set_aspect('equal', 'box')
 ax.set_xlabel('$I_s$ [μA]')
 ax.set_ylabel('$I_i$ [μA]')
 plt.text(-8,-.5,'$l_n$={0} cm, $r_s$={1} cm' .format(l1*100,rs*100))
+plt.text(-8,-.7,'RMSRE = {0}%' .format(rms_rel_error(Ix1, Iy1)*100))
 #ax.set_xticks([250,1000,3250])
 #ax.set_yticks([250,1000,3250])
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
@@ -223,6 +224,9 @@ plt.legend()
 plt.savefig('predict_%i.png'%version, bbox_inches="tight")
 
 
+print_table(
+        [['I1mean'              , 'I2mean'              , 'I3mean'              , 'I4mean'              , 'I5mean'              ],
+        [np.mean(Is[:,0]),np.mean(Is[:,1]),np.mean(Is[:,2]),np.mean(Is[:,3]),np.mean(Is[:,4])]])
 
 
 print_table(

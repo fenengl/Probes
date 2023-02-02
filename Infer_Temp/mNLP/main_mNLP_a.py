@@ -193,6 +193,9 @@ print_table(
 print_table(
     [['B1_std'          ,'B2_std'           ],
      [np.std(beta.Beta_sph),np.std(beta.Beta_cyl)]])
+print_table(
+        [['I1mean'              , 'I2mean'              , 'I3mean'              , 'I4mean'              , 'I5mean'              ],
+        [np.mean(Is[:,0]),np.mean(Is[:,1]),np.mean(Is[:,2]),np.mean(Is[:,3]),np.mean(Is[:,4])]])
 
 
 print_table(

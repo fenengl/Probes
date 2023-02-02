@@ -126,7 +126,13 @@ I=np.append(I_geo1,I_geo2,axis=1)
 
 predictions = net_model.predict(I)
 
-
+I_geo1_test = np.zeros((len( data['ne']),len(Vs_geo1)))
+I_geo2_test = np.zeros((len( data['ne']),len(Vs_geo2)))
+ #####3 here is the problem:
+for i, n, T, V0 in zip(count(), data['ne'], predictions, tqdm(data['V0'])):
+    I_geo1_test[i] = model1(geo1, l.Electron(n=n, T=T), V=V0+Vs_geo1)
+    I_geo2_test[i] = model2(geo2, l.Electron(n=n, T=T), V=V0+Vs_geo2)
+I_test=np.append(I_geo1_test,I_geo2_test,axis=1)
 """
 PART 4: ANALYSIS
 """
@@ -161,6 +167,36 @@ ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('e)')
 plt.savefig('correlation_%i.png'%version, bbox_inches="tight")
+
+Ix1=I[:,0]*1e6
+Iy1=I_test[:,0]*1e6
+Ix2=I[:,1]*1e6
+Iy2=I_test[:,1]*1e6
+Ix3=I[:,2]*1e6
+Iy3=I_test[:,2]*1e6
+fig, ax = plt.subplots(figsize=(10, 10))
+plot = ax.plot
+plot(Ix1, Iy1, 'c+', ms=14)
+plot(Ix2, Iy2, 'c+', ms=14)
+plot(Ix3, Iy3, 'c+', ms=14)
+xmin = min([min(Ix1), min(Iy1),min(Ix2), min(Iy2),min(Ix3), min(Iy3)])
+xmax = max([max(Ix1), max(Iy1),max(Ix2), max(Iy2),max(Ix3), max(Iy3)])
+plot([xmin, xmax], [xmin, xmax], '--k')
+ax.set_aspect('equal', 'box')
+ax.set_xlabel('$I_s$ [μA]')
+ax.set_ylabel('$I_i$ [μA]')
+#ax.set_xticks([250,1000,3250])
+#ax.set_yticks([250,1000,3250])
+ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
+ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
+plt.title('a)')
+
+
+plt.text(-2.75,-.30,'$l_1$={0} cm, $l_2$=$l_3$={1} cm' .format(l1*100,round(l2*100)))
+plt.text(-2.75,-.5,'RMSRE = {0}%' .format(rms_rel_error(Ix1, Iy1)*100))
+
+plt.savefig('I_test_%i.png'%version, bbox_inches="tight")
+plt.show()
 
 
 

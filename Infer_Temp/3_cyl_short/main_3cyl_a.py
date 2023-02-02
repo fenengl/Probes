@@ -153,7 +153,7 @@ ax.set_yticks([250,1000,3250])
 rmsre=rms_rel_error(Ts[K:].ravel(),pred.ravel())
 corrcoeff=pearsonr(Ts[K:].ravel(),pred.ravel())[0]
 
-plt.text(300,2000,'$l_1$={0} cm, $l_2$=$l_3$={1} cm\nRMSRE = {2}' .format(l1*100,round(l2*100),round(rmsre*100,1)))
+plt.text(300,2000,'$l_1$={0} cm, $l_2$=$l_3$={1} cm\nRMSRE = {2}%' .format(l1*100,round(l2*100),round(rmsre*100,1)))
 ax.get_xaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 ax.get_yaxis().set_major_formatter(mplot.ticker.ScalarFormatter())
 plt.title('a)')

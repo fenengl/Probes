@@ -104,7 +104,7 @@ PART 3: PREDICT PLASMA PARAMETERS FROM ACTUAL DATA (IRI)
 Vs_all=np.concatenate((Vs_geo1,Vs_geo2))
 
 
-sel_noise=1e-5
+sel_noise=1e-6
 
 
 data_geo1 = l.generate_synthetic_data(geo1, Vs_geo1, model=model1,noise=sel_noise)
@@ -167,9 +167,7 @@ print_table(
     [['rs'              , 'B1'              , 'V1'              ,'l1'              ,'B2'               , 'V2'              ,'dB'                  ],
      [rs,np.mean(beta.Beta_sph),Vs_geo1[0],l1,np.mean(beta.Beta_cyl),Vs_geo2[0],np.mean(beta.diff_Beta)]])
 
-print_table(
-        [['I1mean'              , 'I2mean'              , 'I3mean'              , 'I4mean'              , 'I5mean'              ],
-        [np.mean(Is[:,0]),np.mean(Is[:,1]),np.mean(Is[:,2]),np.mean(Is[:,3]),np.mean(Is[:,4])]])
+
 
 print_table(
     [['sigma'              ,'RMSRE'

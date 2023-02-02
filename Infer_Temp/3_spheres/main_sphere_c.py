@@ -28,9 +28,9 @@ from scipy.stats.stats import pearsonr
 """
 Geometry, Probes and bias voltages
 """
-version=1
-rs2=15e-3###25
-rs=5e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
+version=3
+rs2=10e-3###25
+rs=3e-3#l.Electron(n=1e11, T=1600).debye*4.5###10e-3 ### ICI2 rocket parameters##10cd..
 
 geo1 = l.Sphere(r=rs)
 geo2 = l.Sphere(r=rs2)
@@ -48,7 +48,7 @@ geometry='sphere'
 PART 1: GENERATE SYNTHETIC DATA USING LANGMUIR
 
 """
-gendata=False
+gendata=True
 N = 13000 ## how many data points
 
 ### adjust the data limits in the class
@@ -74,7 +74,7 @@ PART 2: TRAIN AND TEST THE REGRESSION / TensorFlow NETWORK
 ### select ratio of training and testing data
 M = int(0.7*N)
 K= int(0.8*N)
-TF=False
+TF=True
 
 
 if TF == True:
