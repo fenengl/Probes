@@ -1,5 +1,4 @@
 **.png
-
 **.txt
 test.py
 **.ipynb
@@ -20,6 +19,7 @@ extra_material
 # Python
 __pycache__/
 .DS_Store
+.Rhistory
 .pytest_cache
 .coverage
 **.pyc
@@ -45,3 +45,5 @@ PTetraProbes/Sphere_1.183R_3.5V_3.5V_1500K/meshpic.dat
 core.*
 # PUNC++
 fields
+
+
