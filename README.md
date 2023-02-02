@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 This repository consists of three folders.
 Infer_Temp
 extrapolation_verification
@@ -21,6 +21,6 @@ The noise folder within Infer_Temp shows the different cases with added noise.
 In the extrapolation verification folder, Figure 1 of the publication is plotted.
 
 In PTetraProbes, the simulations runs on PTetra are specified.
-=======
+
 
 >>>>>>> d7cfe66b005a159708e9d97331273e07411f5968
