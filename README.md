@@ -59,27 +59,27 @@ python main.py -h
 ```
 There are six used cases for the model. Three for each geometry types (`Cylinder` and `Sphere`). The used cases can be called if the user intends not to generate synthetic data.
 ### Examples
- `Case - I`: 3 Cylinder ()
+ `Case - I`: 3 Cylinder (l1=2.5cm, l2=l3=3cm, V1=4V, V2=2.5V, V3=7.5V, r=0.255mm)
  ```shell
  python main.py -p cylinder -v 1
  ```
- `Case - II`: 3 Cylinder ()
+ `Case - II`: 3 Cylinder (l1=2.5cm, l2=l3=4cm, V1=4V, V2=2.5V, V3=7.5V, r=0.255mm)
 ```shell
  python main.py -p cylinder -v 2
  ```
- `Case - III`: 3 Cylinder ()
+ `Case - III`: 3 Cylinder (l1=2.5cm, l2=l3=9cm, V1=4V, V2=2.5V, V3=7.5V, r=0.255mm)
  ```shell
  python main.py -p cylinder -v 3
  ```
- `Case - IV`: 3 Sphere ()
+ `Case - IV`: 3 Sphere (r1=0.5cm, r2=r3=1.5cm, V1=4V, V2=2.5V, V3=7.5V)
  ```shell
  python main.py -p sphere -v 1
  ```
- `Case - V`: 3 Sphere ()
+ `Case - V`: 3 Sphere (r1=0.3cm, r2=r3=3cm, V1=4V, V2=2.5V, V3=7.5V)
   ```shell
  python main.py -p sphere -v 2
  ```
- `Case - VI`: 3 Sphere ()
+ `Case - VI`: 3 Sphere (r1=0.3cm, r2=r3=1cm, V1=4V, V2=2.5V, V3=7.5V)
   ```shell
  python main.py -p sphere -v 3
  ```
