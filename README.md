@@ -90,3 +90,6 @@ e.g.
  ```
 ### Figures
 Figures corresponding to the cases can be found under the directory: `probes/images`
+
+### Paper Edition
+The folder paper_edition includes the probe setups used in the publication. It can be executed to reproduce the same plots using the same synthetic data and tensorflow model as in the publication.
