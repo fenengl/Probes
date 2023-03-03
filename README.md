@@ -38,15 +38,15 @@ cd Probes
 
 An [Anaconda](www.anaconda.com) environment is available. Before following the rest of the instruction, make sure Anaconda is installed. You can create the `probes` environment with the following command:
 ```shell
-    conda env create
+conda env create
 ```
 To activate the environment, run:
 ```shell
-    conda activate xsimpy
+conda activate xsimpy
 ```
 and to deactivate it, run:
 ```shell
-    conda deactivate
+conda deactivate
 ```
 ## Getting started
 Go to the source folder,
