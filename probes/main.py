@@ -189,7 +189,7 @@ if args.train:
     _ = ax.legend(
         ["Training loss", "Trainig accuracy", "Validation loss", "Validation accuracy"]
     )
-    plt.savefig("history_%i.png" % version, bbox_inches="tight")
+    plt.savefig(pjoin("images", f"history_{args.probetype}_{version}.png"), bbox_inches="tight")
     plt.show()
 else:
     try:
