@@ -42,7 +42,7 @@ conda env create
 ```
 To activate the environment, run:
 ```shell
-conda activate xsimpy
+conda activate probes
 ```
 and to deactivate it, run:
 ```shell
