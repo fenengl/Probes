@@ -1,0 +1,22 @@
+name: probes
+channels:
+  - default
+dependencies:
+  - python>=3.0
+  - pip
+  - pip:
+    - numpy
+    - ini-parser
+    - matplotlib
+    - langmuir
+    - numba
+    - argparse
+    - scipy
+    - seaborn
+    - tasktimer
+    - frmt
+    - scipy
+    - localreg
+    - tqdm
+    - tensorflow
+    - PyQt6
