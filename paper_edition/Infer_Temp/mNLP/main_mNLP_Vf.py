@@ -24,7 +24,7 @@ from network_RBF import *
 from calc_beta import beta_calc_mNLP
 from scipy.stats.stats import pearsonr
 #from tensorflow.keras.layers import Normalization
-version=6
+version=10
 """
 Geometry, Probes and bias voltages
 """

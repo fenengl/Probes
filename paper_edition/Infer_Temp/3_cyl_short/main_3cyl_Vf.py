@@ -28,7 +28,7 @@ from scipy.stats.stats import pearsonr
 """
 Geometry, Probes and bias voltages
 """
-version=30
+version=10
 l1=10e-3
 l2=90e-3
 r0=0.255e-3
