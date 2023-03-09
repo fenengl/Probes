@@ -23,6 +23,9 @@ In the extrapolation verification folder, Figure 1 of the publication is plotted
 In PTetraProbes, the simulations runs on PTetra are specified. -->
 
 # Probes
+
+[![DOI](https://zenodo.org/badge/448834898.svg)](https://zenodo.org/badge/latestdoi/448834898)
+
 A python tool to infer temperature for different Langmuir probe set-ups.
 
 ## Setting up Workspace
